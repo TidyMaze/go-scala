@@ -12,6 +12,8 @@ class GoGame {
 
   def play(game: GoGame, state: State, move: Move): State = {
     val libertiesByGroup = game.getLibertiesByGroup(state)
+    
+    println(s"Liberties by group: $libertiesByGroup")
 
     state.copy(
       grid = state.grid.updated(move.coord.y, state.grid(move.coord.y).updated(move.coord.x, Some(state.turn))),
