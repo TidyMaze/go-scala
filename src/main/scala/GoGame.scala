@@ -83,7 +83,11 @@ class GoGame {
     )
 
     val killed = getKilledGroups(resultingState, move.coord)
-    killed.isEmpty && getLiberties(resultingState, move.coord).exists(_.isEmpty)
+    val res = killed.isEmpty && getLiberties(resultingState, move.coord).exists(_.isEmpty)
+    if(res){
+      println(s"Playing $move is a suicide")
+    }
+    res
   }
 
   def isOver(state: State): Boolean = {
@@ -97,9 +101,9 @@ class GoGame {
       val color = state.at(group.head).get
 
       val liberties = getLiberties(state, group.head)
-      println(
-        s"Group $group of color $color has ${liberties.get.size} liberties: ${liberties.get}"
-      )
+//      println(
+//        s"Group $group of color $color has ${liberties.get.size} liberties: ${liberties.get}"
+//      )
       color == state.turn.opponent && liberties.exists(l =>
         l.size == 1 && l.head == from
       )
