@@ -17,13 +17,14 @@ object GoApp {
         case Some(m) =>
           state = game.play(game, state, m)
           val stateStr = presenter.showState(state)
+          println(s"${state.turn.opponent} played $m")
           println(stateStr)
         case None =>
           state = game.pass(state)
           println(s"${state.turn.opponent} passed")
       }
       
-      Thread.sleep(1000)
+      Thread.sleep(500)
     }
   }
 }
