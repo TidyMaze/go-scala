@@ -91,7 +91,10 @@ class GoGame {
     val adjacentGroups = getAdjacentGroups(state, from)
     adjacentGroups.filter { group =>
       val liberties = getLiberties(state, group.head)
-      liberties.exists(l => l.size == 1 && liberties.head == from)
+      println(
+        s"Group $group has ${liberties.get.size} liberties: ${liberties.get}"
+      )
+      liberties.exists(l => l.size == 1 && l.head == from)
     }
   }
 
