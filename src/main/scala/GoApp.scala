@@ -15,7 +15,7 @@ object GoApp {
       val move = goAI.findBestMove(game, state)
       move match {
         case Some(m) =>
-          state = game.play(state, m)
+          state = game.play(game, state, m)
           val stateStr = presenter.showState(state)
           println(stateStr)
         case None =>
