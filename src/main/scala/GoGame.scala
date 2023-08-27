@@ -78,13 +78,15 @@ class GoGame {
     val resultingGrid = put(state.grid, move, state.turn)
     val resultingState = state.copy(
       grid = resultingGrid,
-      turn = state.turn.opponent,
+      turn = state.turn,
       passed = state.passed.updated(state.turn, false)
     )
 
-    val killed = getKilledGroups(resultingState, move.coord)
-    val res = killed.isEmpty && getLiberties(resultingState, move.coord).exists(_.isEmpty)
-    if(res){
+    val killed = getKilledGroups(state, move.coord)
+    val res = killed.isEmpty && getLiberties(resultingState, move.coord).exists(
+      _.isEmpty
+    )
+    if (res) {
       println(s"Playing $move is a suicide")
     }
     res
