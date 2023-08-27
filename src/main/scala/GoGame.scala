@@ -73,13 +73,17 @@ class GoGame {
 
   def isSuicide(state: State, move: Move): Boolean = {
     // a suicide is a move that immediately leads to the group being dead
+    // if an enemy group is killed, then it's not a suicide
+
     val resultingGrid = put(state.grid, move, state.turn)
     val resultingState = state.copy(
       grid = resultingGrid,
       turn = state.turn.opponent,
       passed = state.passed.updated(state.turn, false)
     )
-    getLiberties(resultingState, move.coord).exists(_.isEmpty)
+
+    val killed = getKilledGroups(resultingState, move.coord)
+    killed.isEmpty && getLiberties(resultingState, move.coord).exists(_.isEmpty)
   }
 
   def isOver(state: State): Boolean = {
@@ -96,7 +100,9 @@ class GoGame {
       println(
         s"Group $group of color $color has ${liberties.get.size} liberties: ${liberties.get}"
       )
-      color == state.turn.opponent && liberties.exists(l => l.size == 1 && l.head == from)
+      color == state.turn.opponent && liberties.exists(l =>
+        l.size == 1 && l.head == from
+      )
     }
   }
 
