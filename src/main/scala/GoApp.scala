@@ -5,7 +5,7 @@ object GoApp {
   def main(args: Array[String]): Unit = {
     val game = new GoGame()
     val goAI = new GoAI()
-    var state = game.initialState(Custom(4))
+    var state = game.initialState(Nineteen)
 
     val presenter = new Presenter()
     val stateStr = presenter.showState(state)
@@ -23,7 +23,7 @@ object GoApp {
           println(s"${state.turn.opponent} passed")
       }
       
-      Thread.sleep(3000)
+      Thread.sleep(1000)
     }
   }
 }

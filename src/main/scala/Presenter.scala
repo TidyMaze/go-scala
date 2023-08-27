@@ -12,7 +12,7 @@ val gridStr = state.grid.map { row =>
 
     val capturedStr = state.captured.map {
       case (color, count) => s"$color: $count"
-    }.mkString(" ")
+    }.mkString("  ")
 
     s"$gridStr\n$capturedStr"
   }
