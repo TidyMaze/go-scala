@@ -11,15 +11,34 @@ class GoGame {
 
 
   def play(game: GoGame, state: State, move: Move): State = {
-    val libertiesByGroup = game.getLibertiesByGroup(state)
-    
-    println(s"Liberties by group: $libertiesByGroup")
+    val killedGroups = game.getKilledGroups(state, move.coord)
+
+    if(killedGroups.nonEmpty) {
+      println(s"Killed groups: $killedGroups")
+    }
 
     state.copy(
-      grid = state.grid.updated(move.coord.y, state.grid(move.coord.y).updated(move.coord.x, Some(state.turn))),
+      grid = put(removeKilledGroups(state.grid, killedGroups), move, state.turn),
       turn = state.turn.opponent,
+      captured = state.captured.updated(state.turn, state.captured(state.turn) + killedGroups.flatten.size),
       passed = state.passed.updated(state.turn, false)
     )
+  }
+
+  def put(grid: Grid, move: Move, color: Color): Grid =
+    grid.updated(move.coord.y, grid(move.coord.y).updated(move.coord.x, Some(color)))
+
+  def removeKilledGroups(grid: Grid, killedGroups: Set[Set[Coord]]): Grid = {
+    grid.zipWithIndex.map { case (row, rowIndex) =>
+      row.zipWithIndex.map { case (cell, colIndex) =>
+        val coord = Coord(colIndex, rowIndex)
+        if(grid(rowIndex)(colIndex).isEmpty || killedGroups.exists(_.contains(coord))) {
+          None
+        } else {
+          cell
+        }
+      }
+    }
   }
 
   def pass(state: State): State =
@@ -43,29 +62,45 @@ class GoGame {
     blackPassed && whitePassed
   }
 
-  def getLibertiesByGroup(state: State): Map[Seq[Coord], Int] = {
-    val groups = getGroups(state)
-    groups.map { group =>
-      val liberties = group.flatMap(getLiberties(state, _)).distinct
-      group -> liberties.size
-    }.toMap
+  def getKilledGroups(state: State, from: Coord): Set[Set[Coord]] = {
+    val adjacentGroups = getAdjacentGroups(state, from)
+    adjacentGroups.filter { group =>
+      val liberties = getLiberties(state, group.head)
+      liberties.size == 1 && liberties.head == from
+    }
   }
 
-  def getGroups(state: State): Seq[Seq[Coord]] = {
-    val groups = for {
-      (row, rowIndex) <- state.grid.zipWithIndex
-      (cell, colIndex) <- row.zipWithIndex
-      if cell.isDefined
-    } yield getGroup(state, Coord(colIndex, rowIndex))
-    groups.distinct
-  }
-
-  def getGroup(state: State, coord: Coord): Seq[Coord] = {
-    val color = state.grid(coord.y)(coord.x).get
+  def getAdjacentGroups(state: State, coord: Coord): Set[Set[Coord]] = {
     val neighbors = getNeighbors(state, coord)
-    val sameColorNeighbors = neighbors.filter(n => state.at(n).contains(color))
-    val group = sameColorNeighbors.flatMap(getGroup(state, _))
-    (coord +: group).distinct
+    val groups = neighbors.flatMap(getGroup(state, _)).toSet
+    groups
+  }
+
+  def getGroup(state: State, coord: Coord): Option[Set[Coord]] = {
+    val color = state.at(coord)
+
+    color match {
+      case None => None
+      case Some(c) => {
+        var res = Set.empty[Coord]
+        var visited = Set.empty[Coord]
+        var toVisit = Set(coord)
+
+        while (toVisit.nonEmpty) {
+          val current = toVisit.head
+          toVisit = toVisit.tail
+          visited = visited + current
+          if (state.at(current).contains(c)) {
+            res = res + current
+            val neighbors = getNeighbors(state, current)
+            val newNeighbors = neighbors.filterNot(visited.contains)
+            toVisit = toVisit ++ newNeighbors
+          }
+        }
+
+        Some(res)
+      }
+    }
   }
 
   def getLiberties(state: State, coord: Coord): Seq[Coord] = {
@@ -82,7 +117,7 @@ class GoGame {
     )
     neighbors.filter(isValidCoord(state, _))
   }
-  
+
   def isValidCoord(state: State, coord: Coord): Boolean = {
     val gridSize = state.grid.size
     coord.x >= 0 && coord.x < gridSize && coord.y >= 0 && coord.y < gridSize

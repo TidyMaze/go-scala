@@ -22,6 +22,8 @@ object GoApp {
           state = game.pass(state)
           println(s"${state.turn.opponent} passed")
       }
+      
+      Thread.sleep(3000)
     }
   }
 }
