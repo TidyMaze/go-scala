@@ -9,30 +9,40 @@ class GoGame {
       Map(Black -> false, White -> false)
     )
 
-
   def play(game: GoGame, state: State, move: Move): State = {
     val killedGroups = game.getKilledGroups(state, move.coord)
 
-    if(killedGroups.nonEmpty) {
+    if (killedGroups.nonEmpty) {
       println(s"Killed groups: $killedGroups")
     }
 
     state.copy(
-      grid = put(removeKilledGroups(state.grid, killedGroups), move, state.turn),
+      grid =
+        put(removeKilledGroups(state.grid, killedGroups), move, state.turn),
       turn = state.turn.opponent,
-      captured = state.captured.updated(state.turn, state.captured(state.turn) + killedGroups.flatten.size),
+      captured = state.captured.updated(
+        state.turn,
+        state.captured(state.turn) + killedGroups.flatten.size
+      ),
       passed = state.passed.updated(state.turn, false)
     )
   }
 
   def put(grid: Grid, move: Move, color: Color): Grid =
-    grid.updated(move.coord.y, grid(move.coord.y).updated(move.coord.x, Some(color)))
+    grid.updated(
+      move.coord.y,
+      grid(move.coord.y).updated(move.coord.x, Some(color))
+    )
 
   def removeKilledGroups(grid: Grid, killedGroups: Set[Set[Coord]]): Grid = {
     grid.zipWithIndex.map { case (row, rowIndex) =>
       row.zipWithIndex.map { case (cell, colIndex) =>
         val coord = Coord(colIndex, rowIndex)
-        if(grid(rowIndex)(colIndex).isEmpty || killedGroups.exists(_.contains(coord))) {
+        if (
+          grid(rowIndex)(colIndex).isEmpty || killedGroups.exists(
+            _.contains(coord)
+          )
+        ) {
           None
         } else {
           cell
@@ -42,7 +52,10 @@ class GoGame {
   }
 
   def pass(state: State): State =
-    state.copy(turn = state.turn.opponent, passed = state.passed.updated(state.turn, true))
+    state.copy(
+      turn = state.turn.opponent,
+      passed = state.passed.updated(state.turn, true)
+    )
 
   def getValidMoves(state: State): Seq[Move] = {
     // find any empty cell
@@ -52,10 +65,16 @@ class GoGame {
       if cell.isEmpty
     } yield Coord(colIndex, rowIndex)
 
-    emptyCells.map(Move.apply)
-
+    // remove all suicide moves
+    emptyCells
+      .filterNot(c => isSuicide(state, c))
+      .map(Move.apply)
   }
 
+  def isSuicide(state: State, coord: Coord): Boolean = {
+    // a suicide is a move that immediately leads to the group being dead
+    false
+  }
 
   def isOver(state: State): Boolean = {
     val (blackPassed, whitePassed) = (state.passed(Black), state.passed(White))
