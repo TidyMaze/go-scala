@@ -24,7 +24,7 @@ object GoApp {
           println(s"${state.turn.opponent} passed")
       }
       
-      Thread.sleep(500)
+      Thread.sleep(100)
     }
   }
 }
