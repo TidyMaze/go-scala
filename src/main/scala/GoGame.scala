@@ -79,7 +79,7 @@ class GoGame {
       turn = state.turn.opponent,
       passed = state.passed.updated(state.turn, false)
     )
-    getLiberties(resultingState, move.coord).isEmpty
+    getLiberties(resultingState, move.coord).exists(_.isEmpty)
   }
 
   def isOver(state: State): Boolean = {
@@ -91,7 +91,7 @@ class GoGame {
     val adjacentGroups = getAdjacentGroups(state, from)
     adjacentGroups.filter { group =>
       val liberties = getLiberties(state, group.head)
-      liberties.size == 1 && liberties.head == from
+      liberties.exists(l => l.size == 1 && liberties.head == from)
     }
   }
 
@@ -128,9 +128,12 @@ class GoGame {
     }
   }
 
-  def getLiberties(state: State, coord: Coord): Seq[Coord] = {
-    val neighbors = getNeighbors(state, coord)
-    neighbors.filter(state.at(_).isEmpty)
+  def getLiberties(state: State, coord: Coord): Option[Set[Coord]] = {
+    // count the number of empty cells around the group
+    val group = getGroup(state, coord)
+    group.map { group =>
+      group.flatMap(getNeighbors(state, _)).filter(state.at(_).isEmpty)
+    }
   }
 
   def getNeighbors(state: State, coord: Coord) = {
