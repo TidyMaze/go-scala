@@ -90,11 +90,13 @@ class GoGame {
   def getKilledGroups(state: State, from: Coord): Set[Set[Coord]] = {
     val adjacentGroups = getAdjacentGroups(state, from)
     adjacentGroups.filter { group =>
+      val color = state.at(group.head).get
+
       val liberties = getLiberties(state, group.head)
       println(
-        s"Group $group has ${liberties.get.size} liberties: ${liberties.get}"
+        s"Group $group of color $color has ${liberties.get.size} liberties: ${liberties.get}"
       )
-      liberties.exists(l => l.size == 1 && l.head == from)
+      color == state.turn.opponent && liberties.exists(l => l.size == 1 && l.head == from)
     }
   }
 
