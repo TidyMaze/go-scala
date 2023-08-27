@@ -14,3 +14,7 @@ case object Thirteen extends GridSize {
 case object Nineteen extends GridSize {
   override def getSize: Int = 19
 }
+
+case class Custom(size: Int) extends GridSize {
+  override def getSize: Int = size
+}

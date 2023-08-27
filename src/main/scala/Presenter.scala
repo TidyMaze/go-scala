@@ -7,7 +7,7 @@ val gridStr = state.grid.map { row =>
         case None => "."
         case Some(Black) => "X"
         case Some(White) => "O"
-      }.mkString("")
+      }.mkString(" ")
     }.mkString("\n")
 
     val capturedStr = state.captured.map {
