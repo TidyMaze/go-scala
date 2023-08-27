@@ -67,13 +67,19 @@ class GoGame {
 
     // remove all suicide moves
     emptyCells
-      .filterNot(c => isSuicide(state, c))
       .map(Move.apply)
+      .filterNot(m => isSuicide(state, m))
   }
 
-  def isSuicide(state: State, coord: Coord): Boolean = {
+  def isSuicide(state: State, move: Move): Boolean = {
     // a suicide is a move that immediately leads to the group being dead
-    false
+    val resultingGrid = put(state.grid, move, state.turn)
+    val resultingState = state.copy(
+      grid = resultingGrid,
+      turn = state.turn.opponent,
+      passed = state.passed.updated(state.turn, false)
+    )
+    getLiberties(resultingState, move.coord).isEmpty
   }
 
   def isOver(state: State): Boolean = {
