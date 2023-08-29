@@ -6,7 +6,8 @@ case class State(
     grid: Grid,
     turn: Color,
     captured: Map[Color, Int],
-    passed: Map[Color, Boolean]
+    passed: Map[Color, Boolean],
+    alreadyPlayedStates: Set[Grid]
 ) {
   def at(coord: Coord): Option[Color] = {
     assert(coord.x >= 0 && coord.x < grid.size)

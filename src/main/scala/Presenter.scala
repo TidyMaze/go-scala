@@ -15,7 +15,7 @@ class Presenter {
           }
         rowStr.mkString(" ")
       }
-      
+
 
     val capturedStr = state.captured
       .map { case (color, count) =>
@@ -23,6 +23,6 @@ class Presenter {
       }
       .mkString(" ")
 
-    s"${gridStr.mkString("\n")}\n$capturedStr"
+    s"${gridStr.mkString("\n")}\n$capturedStr\n${state.alreadyPlayedStates.size} played states"
   }
 }

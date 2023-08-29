@@ -6,11 +6,12 @@ class GoGame {
       Grid.empty(gridSize.getSize),
       Black,
       Map(Black -> 0, White -> 0),
-      Map(Black -> false, White -> false)
+      Map(Black -> false, White -> false),
+      Set.empty
     )
 
-  def play(game: GoGame, state: State, move: Move): State = {
-    val killedGroups = game.getKilledGroups(state, move.coord)
+  def play(state: State, move: Move): State = {
+    val killedGroups = getKilledGroups(state, move.coord)
 
     if (killedGroups.nonEmpty) {
       println(s"Killed groups: $killedGroups")
@@ -24,7 +25,8 @@ class GoGame {
         state.turn,
         state.captured(state.turn) + killedGroups.flatten.size
       ),
-      passed = state.passed.updated(state.turn, false)
+      passed = state.passed.updated(state.turn, false),
+      alreadyPlayedStates = state.alreadyPlayedStates + state.grid
     )
   }
 
@@ -58,6 +60,12 @@ class GoGame {
     emptyCells
       .map(Move.apply)
       .filterNot(m => isSuicide(state, m))
+      .filterNot(m => resultsInAlreadyPlayedState(state, m))
+  }
+  
+  def resultsInAlreadyPlayedState(state: State, move: Move) = {
+    val resState = play(state, move)
+    state.alreadyPlayedStates.contains(resState.grid)
   }
 
   def isSuicide(state: State, move: Move): Boolean = {
