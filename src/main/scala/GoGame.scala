@@ -13,20 +13,21 @@ class GoGame {
   def play(state: State, move: Move): State = {
     val killedGroups = getKilledGroups(state, move.coord)
 
-    if (killedGroups.nonEmpty) {
-      println(s"Killed groups: $killedGroups")
-    }
+//    if (killedGroups.nonEmpty) {
+//      println(s"Killed groups: $killedGroups")
+//    }
 
+    val newGrid =
+      put(removeKilledGroups(state.grid, killedGroups), move, state.turn)
     state.copy(
-      grid =
-        put(removeKilledGroups(state.grid, killedGroups), move, state.turn),
+      grid = newGrid,
       turn = state.turn.opponent,
       captured = state.captured.updated(
         state.turn,
         state.captured(state.turn) + killedGroups.flatten.size
       ),
       passed = state.passed.updated(state.turn, false),
-      alreadyPlayedStates = state.alreadyPlayedStates + state.grid
+      alreadyPlayedStates = state.alreadyPlayedStates + newGrid
     )
   }
 
@@ -62,7 +63,7 @@ class GoGame {
       .filterNot(m => isSuicide(state, m))
       .filterNot(m => resultsInAlreadyPlayedState(state, m))
   }
-  
+
   def resultsInAlreadyPlayedState(state: State, move: Move) = {
     val resState = play(state, move)
     state.alreadyPlayedStates.contains(resState.grid)
@@ -83,9 +84,9 @@ class GoGame {
     val res = killed.isEmpty && getLiberties(resultingState, move.coord).exists(
       _.isEmpty
     )
-    if (res) {
-      println(s"Playing $move is a suicide")
-    }
+//    if (res) {
+//      println(s"Playing $move is a suicide")
+//    }
     res
   }
 
