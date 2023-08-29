@@ -17,13 +17,13 @@ class Grid(val grid: Seq[Seq[Option[Color]]]) {
 
 
   private def canEqual(other: Any): Boolean = other.isInstanceOf[Grid]
-  
+
   override def equals(other: Any): Boolean = other match
     case that: Grid =>
       that.canEqual(this) &&
         grid == that.grid
     case _ => false
-  
+
   override def hashCode(): Int =
     val state = Seq(grid)
     state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
