@@ -22,6 +22,7 @@ object GoApp {
           val stateStr = presenter.showState(state)
           println(s"${state.turn.opponent} played $m")
           println(stateStr)
+          println("\n")
         case None =>
           state = game.pass(state)
           println(s"${state.turn.opponent} passed")

@@ -2,17 +2,20 @@ package fr.yaro.go
 
 class Presenter {
   def showState(state: State): String = {
-    val gridStr = state.grid
-      .map { row =>
-        row
-          .map {
-            case None        => "."
-            case Some(Black) => "X"
-            case Some(White) => "O"
+    val gridStr =
+      for (y <- 0 until state.grid.size) yield {
+        val rowStr =
+          for (x <- 0 until state.grid.size) yield {
+            val color = state.grid(Coord(x, y))
+            color match {
+              case Some(Black) => "X"
+              case Some(White) => "O"
+              case None => "."
+            }
           }
-          .mkString("  ")
+        rowStr.mkString(" ")
       }
-      .mkString("\n")
+      
 
     val capturedStr = state.captured
       .map { case (color, count) =>
@@ -20,6 +23,6 @@ class Presenter {
       }
       .mkString(" ")
 
-    s"$gridStr\n$capturedStr"
+    s"${gridStr.mkString("\n")}\n$capturedStr"
   }
 }

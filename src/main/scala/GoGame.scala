@@ -3,7 +3,7 @@ package fr.yaro.go
 class GoGame {
   def initialState(gridSize: GridSize): State =
     State(
-      Seq.fill(gridSize.getSize, gridSize.getSize)(None),
+      Grid.empty(gridSize.getSize),
       Black,
       Map(Black -> 0, White -> 0),
       Map(Black -> false, White -> false)
@@ -29,24 +29,12 @@ class GoGame {
   }
 
   def put(grid: Grid, move: Move, color: Color): Grid =
-    grid.updated(
-      move.coord.y,
-      grid(move.coord.y).updated(move.coord.x, Some(color))
-    )
+    grid.updated(move.coord, Some(color))
 
   def removeKilledGroups(grid: Grid, killedGroups: Set[Set[Coord]]): Grid = {
-    grid.zipWithIndex.map { case (row, rowIndex) =>
-      row.zipWithIndex.map { case (cell, colIndex) =>
-        val coord = Coord(colIndex, rowIndex)
-        if (
-          grid(rowIndex)(colIndex).isEmpty || killedGroups.exists(
-            _.contains(coord)
-          )
-        ) {
-          None
-        } else {
-          cell
-        }
+    killedGroups.foldLeft(grid) { (grid, group) =>
+      group.foldLeft(grid) { (grid, coord) =>
+        grid.updated(coord, None)
       }
     }
   }
@@ -60,10 +48,11 @@ class GoGame {
   def getValidMoves(state: State): Seq[Move] = {
     // find any empty cell
     val emptyCells = for {
-      (row, rowIndex) <- state.grid.zipWithIndex
-      (cell, colIndex) <- row.zipWithIndex
-      if cell.isEmpty
-    } yield Coord(colIndex, rowIndex)
+      x <- 0 until state.gridSize
+      y <- 0 until state.gridSize
+      coord = Coord(x, y)
+      if state.at(coord).isEmpty
+    } yield coord
 
     // remove all suicide moves
     emptyCells
