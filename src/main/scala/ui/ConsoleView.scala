@@ -3,10 +3,6 @@ package ui
 
 import engine.{Black, Coord, State, White}
 
-trait View {
-  def render(state: State): Unit
-}
-
 class ConsoleView extends View {
   def showState(state: State): String = {
     val gridStr =
