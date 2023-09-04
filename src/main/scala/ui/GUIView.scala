@@ -21,6 +21,7 @@ import scalafx.scene.shape.{Circle, Rectangle}
 import scalafx.scene.text.{Text, TextAlignment}
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
 
 class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
   // watchable count
@@ -29,6 +30,12 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
   Future {
     println("starting GUI in background")
     this.main(Array())
+  }.andThen {
+    case Success(_) => println("GUI started")
+    case Failure(e) =>
+      println("GUI failed to start: " + e)
+      e.printStackTrace()
+      System.exit(1)
   }
 
   override def render(state: State): Unit = {
@@ -63,14 +70,36 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
     )
   )
 
+  var text2 = new Label("Hello World2!")
+  text2.textAlignment = TextAlignment.Center
+  // red background
+  text2.setBackground(
+    new Background(
+      Array(
+        new BackgroundFill(
+          Color.rgb(255, 0, 0),
+          CornerRadii.Empty,
+          Insets.Empty
+        )
+      )
+    )
+  )
+
   override def start(): Unit = {
-    val hBox: HBox = new HBox(text) {
+    assert(this.text != null)
+    assert(this.text2 != null)
+
+    val hBox: HBox = new HBox(text, text2) {
       alignment = Pos.Center
       fillHeight = true
     }
 
     text.hgrow = Priority.Always
     text.vgrow = Priority.Always
+
+    text2.hgrow = Priority.Always
+    text2.vgrow = Priority.Always
+
     hBox.hgrow = Priority.Always
     hBox.vgrow = Priority.Always
 
