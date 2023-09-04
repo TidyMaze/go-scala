@@ -1,18 +1,16 @@
 package fr.yaro.go
 
 import ai.GoAI
+import engine.{Custom, GoGame}
+import ui.ConsoleView
 
-import fr.yaro.go.engine.{Custom, GoGame}
-import fr.yaro.go.ui.Presenter
-
-object GoApp {
-
-  def main(args: Array[String]): Unit = {
+class Controller {
+  def startGame() = {
     val game = new GoGame()
     val goAI = new GoAI()
     var state = game.initialState(Custom(9))
 
-    val presenter = new Presenter()
+    val presenter = new ConsoleView()
     val stateStr = presenter.showState(state)
     println(stateStr)
 
@@ -33,7 +31,15 @@ object GoApp {
           println(s"${state.turn.opponent} passed")
       }
 
-//      Thread.sleep(100)
+      //      Thread.sleep(100)
     }
+  }
+}
+
+object GoApp {
+
+  def main(args: Array[String]): Unit = {
+    val controller = new Controller()
+    controller.startGame()
   }
 }

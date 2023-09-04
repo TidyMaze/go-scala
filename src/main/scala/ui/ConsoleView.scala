@@ -3,7 +3,7 @@ package ui
 
 import engine.{Black, Coord, State, White}
 
-class Presenter {
+class ConsoleView {
   def showState(state: State): String = {
     val gridStr =
       for (y <- 0 until state.grid.size) yield {
