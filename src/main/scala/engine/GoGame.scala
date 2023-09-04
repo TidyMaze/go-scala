@@ -1,4 +1,7 @@
 package fr.yaro.go
+package engine
+
+import engine.{Black, Color, Coord, White}
 
 class GoGame {
   def initialState(gridSize: GridSize): State =

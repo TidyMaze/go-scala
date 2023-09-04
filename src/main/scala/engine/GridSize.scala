@@ -1,4 +1,5 @@
 package fr.yaro.go
+package engine
 
 trait GridSize {
   def getSize: Int

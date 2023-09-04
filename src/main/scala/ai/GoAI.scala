@@ -1,4 +1,7 @@
 package fr.yaro.go
+package ai
+
+import fr.yaro.go.engine.{GoGame, Move, State}
 
 import scala.util.Random
 

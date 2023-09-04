@@ -1,5 +1,10 @@
 package fr.yaro.go
 
+import ai.GoAI
+
+import fr.yaro.go.engine.{Custom, GoGame}
+import fr.yaro.go.ui.Presenter
+
 object GoApp {
 
   def main(args: Array[String]): Unit = {

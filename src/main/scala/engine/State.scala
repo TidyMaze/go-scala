@@ -1,4 +1,7 @@
 package fr.yaro.go
+package engine
+
+import engine.{Color, Coord, Grid}
 
 import scala.util.{Failure, Try}
 

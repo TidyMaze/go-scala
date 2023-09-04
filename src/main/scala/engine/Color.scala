@@ -1,4 +1,5 @@
 package fr.yaro.go
+package engine
 
 sealed trait Color {
   def opponent: Color = this match {

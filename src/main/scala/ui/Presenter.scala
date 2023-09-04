@@ -1,4 +1,7 @@
 package fr.yaro.go
+package ui
+
+import engine.{Black, Coord, State, White}
 
 class Presenter {
   def showState(state: State): String = {

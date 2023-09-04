@@ -1,4 +1,7 @@
 package fr.yaro.go
+package engine
+
+import engine.{Color, Coord}
 
 class Grid(val grid: Seq[Seq[Option[Color]]]) {
   def apply(coord: Coord): Option[Color] = {
