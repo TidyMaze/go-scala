@@ -6,14 +6,7 @@ import scalafx.application.{JFXApp3, Platform}
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.control.Label
-import scalafx.scene.layout.{
-  Background,
-  BackgroundFill,
-  CornerRadii,
-  HBox,
-  Priority,
-  VBox
-}
+import scalafx.scene.layout.{Background, BackgroundFill, Border, BorderStroke, BorderStrokeStyle, BorderWidths, CornerRadii, HBox, Priority, VBox}
 import scalafx.scene.{Group, Scene}
 import scalafx.scene.paint.Color._
 import scalafx.scene.paint.{Color, LinearGradient, Stops}
@@ -55,26 +48,28 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
     }
   }
 
-  var text = new Label("Hello World!")
-  text.textAlignment = TextAlignment.Center
-  // yellow background
-  text.setBackground(
-    new Background(
+  var text = new Label("Hello World!") {
+    textAlignment = TextAlignment.Center
+    // green background
+    background = new Background(
       Array(
         new BackgroundFill(
-          Color.rgb(255, 255, 0),
+          Color.rgb(0, 255, 0),
           CornerRadii.Empty,
           Insets.Empty
         )
       )
     )
-  )
+    hgrow = Priority.Always
+    vgrow = Priority.Always
+    maxWidth = Double.MaxValue
+    maxHeight = Double.MaxValue
+  }
 
-  var text2 = new Label("Hello World2!")
-  text2.textAlignment = TextAlignment.Center
-  // red background
-  text2.setBackground(
-    new Background(
+  var text2 = new Label("Hello !!!!!!!!!!") {
+    textAlignment = TextAlignment.Center
+    // green background
+    background = new Background(
       Array(
         new BackgroundFill(
           Color.rgb(255, 0, 0),
@@ -83,34 +78,42 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
         )
       )
     )
-  )
+    hgrow = Priority.Always
+    vgrow = Priority.Always
+    maxWidth = Double.MaxValue
+    maxHeight = Double.MaxValue
+  }
 
   override def start(): Unit = {
     assert(this.text != null)
     assert(this.text2 != null)
 
     val hBox: HBox = new HBox(text, text2) {
+      border = new Border(
+        new BorderStroke(
+          Color.rgb(0, 0, 0),
+          BorderStrokeStyle.Solid,
+          CornerRadii.Empty,
+          BorderWidths.Default
+        )
+      )
+      spacing = 50
       alignment = Pos.Center
       fillHeight = true
+      background = new Background(
+        Array(
+          new BackgroundFill(
+            Color.rgb(0, 255, 0),
+            CornerRadii.Empty,
+            Insets.Empty
+          )
+        )
+      )
+      vgrow = Priority.Always
+      hgrow = Priority.Always
+      maxWidth = Double.MaxValue
+      maxHeight = Double.MaxValue
     }
-
-    text.hgrow = Priority.Always
-    text.vgrow = Priority.Always
-
-    text.maxWidth(Double.MaxValue)
-    text.maxHeight(Double.MaxValue)
-
-    text2.hgrow = Priority.Always
-    text2.vgrow = Priority.Always
-
-    text2.maxWidth(Double.MaxValue)
-    text2.maxHeight(Double.MaxValue)
-
-    hBox.hgrow = Priority.Always
-    hBox.vgrow = Priority.Always
-
-    hBox.maxWidth(Double.MaxValue)
-    hBox.maxHeight(Double.MaxValue)
 
     val s = new Scene {
       fill = Color.rgb(0, 0, 200)
