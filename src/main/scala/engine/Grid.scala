@@ -13,23 +13,24 @@ class Grid(val grid: Seq[Seq[Option[Color]]]) {
   def updated(c: Coord, color: Option[Color]): Grid = {
     assert(c.x >= 0 && c.x < size)
     assert(c.y >= 0 && c.y < size)
-    Grid(grid.updated(c.y, grid(c.y).updated(c.x, color)))
+    new Grid(grid.updated(c.y, grid(c.y).updated(c.x, color)))
   }
 
   def size: Int = grid.size
 
-
   private def canEqual(other: Any): Boolean = other.isInstanceOf[Grid]
 
-  override def equals(other: Any): Boolean = other match
+  override def equals(other: Any): Boolean = other match {
     case that: Grid =>
       that.canEqual(this) &&
         grid == that.grid
     case _ => false
+  }
 
-  override def hashCode(): Int =
+  override def hashCode(): Int = {
     val state = Seq(grid)
     state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
+  }
 }
 
 object Grid {

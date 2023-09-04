@@ -7,3 +7,5 @@ lazy val root = (project in file("."))
     name := "go-scala",
     idePackagePrefix := Some("fr.yaro.go")
   )
+
+libraryDependencies += "org.scalafx" %% "scalafx" % "20.0.0-R31"
