@@ -4,8 +4,16 @@ import engine.State
 
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.application.JFXApp3.PrimaryStage
-import scalafx.geometry.Pos
-import scalafx.scene.layout.HBox
+import scalafx.geometry.{Insets, Pos}
+import scalafx.scene.control.Label
+import scalafx.scene.layout.{
+  Background,
+  BackgroundFill,
+  CornerRadii,
+  HBox,
+  Priority,
+  VBox
+}
 import scalafx.scene.{Group, Scene}
 import scalafx.scene.paint.Color._
 import scalafx.scene.paint.{Color, LinearGradient, Stops}
@@ -40,18 +48,35 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
     }
   }
 
-  var text = new Text("Hello World!")
-  text.fill = Color.rgb(0, 0, 0, 1)
-  text.stroke = Color.rgb(255, 255, 255, 1)
+  var text = new Label("Hello World!")
   text.textAlignment = TextAlignment.Center
-//  text.alignmentInParent = Pos.Center
+  // yellow background
+  text.setBackground(
+    new Background(
+      Array(
+        new BackgroundFill(
+          Color.rgb(255, 255, 0),
+          CornerRadii.Empty,
+          Insets.Empty
+        )
+      )
+    )
+  )
 
   override def start(): Unit = {
+    val hBox: HBox = new HBox(text) {
+      alignment = Pos.Center
+      fillHeight = true
+    }
+
+    text.hgrow = Priority.Always
+    text.vgrow = Priority.Always
+    hBox.hgrow = Priority.Always
+    hBox.vgrow = Priority.Always
+
     val s = new Scene {
-      fill = Color.rgb(0, 0, 255)
-      content = new HBox(text) {
-        alignment = Pos.Center
-      }
+      fill = Color.rgb(0, 0, 200)
+      content = hBox
     }
 
     stage = new PrimaryStage {
