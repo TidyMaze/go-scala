@@ -2,17 +2,15 @@ package fr.yaro.go
 
 import ai.GoAI
 import engine.{Custom, GoGame}
-import ui.ConsoleView
+import ui.{ConsoleView, View}
 
-class Controller {
+class Controller(view: View) {
   def startGame() = {
     val game = new GoGame()
     val goAI = new GoAI()
     var state = game.initialState(Custom(9))
-
-    val presenter = new ConsoleView()
-    val stateStr = presenter.showState(state)
-    println(stateStr)
+    
+    view.render(state)
 
     while (!game.isOver(state)) {
       // clean the console
@@ -22,10 +20,8 @@ class Controller {
       move match {
         case Some(m) =>
           state = game.play(state, m)
-          val stateStr = presenter.showState(state)
           println(s"${state.turn.opponent} played $m")
-          println(stateStr)
-          println("\n")
+          view.render(state)
         case None =>
           state = game.pass(state)
           println(s"${state.turn.opponent} passed")
@@ -39,7 +35,8 @@ class Controller {
 object GoApp {
 
   def main(args: Array[String]): Unit = {
-    val controller = new Controller()
+    val view = new ConsoleView()
+    val controller = new Controller(view)
     controller.startGame()
   }
 }

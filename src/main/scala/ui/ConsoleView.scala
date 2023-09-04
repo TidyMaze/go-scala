@@ -3,7 +3,11 @@ package ui
 
 import engine.{Black, Coord, State, White}
 
-class ConsoleView {
+trait View {
+  def render(state: State): Unit
+}
+
+class ConsoleView extends View {
   def showState(state: State): String = {
     val gridStr =
       for (y <- 0 until state.grid.size) yield {
@@ -13,12 +17,11 @@ class ConsoleView {
             color match {
               case Some(Black) => "X"
               case Some(White) => "O"
-              case None => "."
+              case None        => "."
             }
           }
         rowStr.mkString(" ")
       }
-
 
     val capturedStr = state.captured
       .map { case (color, count) =>
@@ -28,4 +31,6 @@ class ConsoleView {
 
     s"${gridStr.mkString("\n")}\n$capturedStr\n${state.alreadyPlayedStates.size} played states"
   }
+
+  override def render(state: State): Unit = println(showState(state) + "\n")
 }
