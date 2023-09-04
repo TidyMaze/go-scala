@@ -4,15 +4,18 @@ import engine.State
 
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.application.JFXApp3.PrimaryStage
-import scalafx.scene.Scene
+import scalafx.geometry.Pos
+import scalafx.scene.layout.HBox
+import scalafx.scene.{Group, Scene}
 import scalafx.scene.paint.Color._
 import scalafx.scene.paint.{Color, LinearGradient, Stops}
-import scalafx.scene.shape.Rectangle
-import scalafx.scene.text.Text
+import scalafx.scene.shape.{Circle, Rectangle}
+import scalafx.scene.text.{Text, TextAlignment}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
+  // watchable count
   var frame = 0
 
   Future {
@@ -22,6 +25,8 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
 
   override def render(state: State): Unit = {
     println("rendering frame " + frame)
+
+    // watchable count
     frame += 1
 
     if (this.stage == null) {
@@ -31,31 +36,31 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
 
     Platform.runLater {
       println("running later frame " + frame)
-
-      stage.scene = new Scene {
-        fill = Color.rgb(200, 38, 38)
-        content = new Text(0,0,s"frame $frame") {
-          fill = Color.White
-        }
-      }
-
-      stage.show()
+      text.text = "Frame " + frame
     }
   }
 
+  var text = new Text("Hello World!")
+  text.fill = Color.rgb(0, 0, 0, 1)
+  text.stroke = Color.rgb(255, 255, 255, 1)
+  text.textAlignment = TextAlignment.Center
+//  text.alignmentInParent = Pos.Center
+
   override def start(): Unit = {
+    val s = new Scene {
+      fill = Color.rgb(0, 0, 255)
+      content = new HBox(text) {
+        alignment = Pos.Center
+      }
+    }
+
     stage = new PrimaryStage {
       title = "Go"
       width = 600
       height = 450
-      scene = new Scene {
-        fill = Color.rgb(38, 38, 38)
-        content = new Text {
-          text = "Scala"
-          style = "-fx-font: normal bold 100pt sans-serif"
-          fill = new LinearGradient(endX = 0, stops = Stops(Red, DarkRed))
-        }
-      }
+      scene = s
     }
+
+    stage.show()
   }
 }
