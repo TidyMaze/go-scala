@@ -97,11 +97,20 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
     text.hgrow = Priority.Always
     text.vgrow = Priority.Always
 
+    text.maxWidth(Double.MaxValue)
+    text.maxHeight(Double.MaxValue)
+
     text2.hgrow = Priority.Always
     text2.vgrow = Priority.Always
 
+    text2.maxWidth(Double.MaxValue)
+    text2.maxHeight(Double.MaxValue)
+
     hBox.hgrow = Priority.Always
     hBox.vgrow = Priority.Always
+
+    hBox.maxWidth(Double.MaxValue)
+    hBox.maxHeight(Double.MaxValue)
 
     val s = new Scene {
       fill = Color.rgb(0, 0, 200)
