@@ -59,18 +59,6 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
 
   override def start(): Unit = {
 
-    cells = (0 until 9 map { i: Int =>
-      0 until 9 map { j =>
-        new Button(s"$i,$j") {
-          maxWidth = Double.MaxValue
-          maxHeight = Double.MaxValue
-          onAction = _ => {
-            println(s"clicked $i,$j")
-          }
-        }
-      }
-    })
-
     val grid = new GridPane() {
       alignment = Pos.Center
       hgrow = Priority.Always
@@ -84,6 +72,18 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
         )
       )
     }
+
+    cells = (0 until 9 map { i: Int =>
+      0 until 9 map { j =>
+        new Button(s"$i,$j") {
+          maxWidth = Double.MaxValue
+          maxHeight = Double.MaxValue
+          onAction = _ => {
+            println(s"clicked $i,$j")
+          }
+        }
+      }
+    })
 
     cells.zipWithIndex.foreach { case (row, i) =>
       row.zipWithIndex.foreach { case (cell, j) =>
