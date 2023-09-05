@@ -1,10 +1,10 @@
 package fr.yaro.go
 package ui
-import engine.State
+import engine.{Black, State, White}
 
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.application.{JFXApp3, Platform}
-import scalafx.geometry.Pos
+import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.{Button, Label}
 import scalafx.scene.layout._
@@ -52,6 +52,11 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
         row.zipWithIndex.foreach { case (cell, j) =>
           val button = cells(i)(j)
           button.text = cell.toString
+          button.background = cell match {
+            case None => new Background(Array(new BackgroundFill(Color.rgb(219,167,94), CornerRadii.Empty, Insets.Empty)))
+            case Some(Black) => new Background(Array(new BackgroundFill(Color.Black, CornerRadii.Empty, Insets.Empty)))
+            case Some(White) => new Background(Array(new BackgroundFill(Color.White, CornerRadii.Empty, Insets.Empty)))
+          }
         }
       }
     }
