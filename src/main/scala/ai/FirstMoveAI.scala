@@ -2,14 +2,12 @@ package fr.yaro.go
 package ai
 
 import engine.{GoGame, Move, State}
-import helpers.RandomHelpers.randomIn
 
-/** This AI plays a random move.
+/** This AI plays the first move it finds.
   */
-class RandomAI extends AI {
+class FirstMoveAI extends AI {
   def findBestMove(game: GoGame, state: State): Option[Move] = {
     val moves = game.getValidMoves(state)
-    if (moves.isEmpty) None
-    else Some(randomIn(moves))
+    moves.headOption
   }
 }
