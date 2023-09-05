@@ -44,19 +44,23 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
       return
     }
 
+    val backgroundColor = Color.rgb(219, 167, 94)
+
     Platform.runLater {
       println("running later frame " + frame)
 
       // update grid cells
       state.grid.grid.zipWithIndex.foreach { case (row, i) =>
         row.zipWithIndex.foreach { case (cell, j) =>
+          val color = cell match {
+            case None => backgroundColor
+            case Some(Black) => Color.Black
+            case Some(White) => Color.White
+          }
+
           val button = cells(i)(j)
           button.text = cell.toString
-          button.background = cell match {
-            case None => new Background(Array(new BackgroundFill(Color.rgb(219,167,94), CornerRadii.Empty, Insets.Empty)))
-            case Some(Black) => new Background(Array(new BackgroundFill(Color.Black, CornerRadii.Empty, Insets.Empty)))
-            case Some(White) => new Background(Array(new BackgroundFill(Color.White, CornerRadii.Empty, Insets.Empty)))
-          }
+          button.background = new Background(Array(new BackgroundFill(color, CornerRadii.Empty, Insets.Empty)))
         }
       }
     }
