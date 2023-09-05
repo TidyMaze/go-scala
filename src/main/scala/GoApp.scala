@@ -1,6 +1,6 @@
 package fr.yaro.go
 
-import ai.GoAI
+import ai.RandomAI
 import engine.{Custom, GoGame}
 import ui.{ConsoleView, GUIView, View}
 
@@ -10,7 +10,7 @@ import scala.concurrent.ExecutionContext
 class Controller(view: View) {
   def startGame() = {
     val game = new GoGame()
-    val goAI = new GoAI()
+    val goAI = new RandomAI()
     var state = game.initialState(Custom(9))
 
     view.render(state)

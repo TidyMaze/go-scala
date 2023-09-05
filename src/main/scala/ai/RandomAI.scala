@@ -1,16 +1,13 @@
 package fr.yaro.go
 package ai
 
-import fr.yaro.go.engine.{GoGame, Move, State}
+import engine.{GoGame, Move, State}
+import helpers.RandomHelpers.randomIn
 
-import scala.util.Random
-
-class GoAI {
+class RandomAI extends AI {
   def findBestMove(game: GoGame, state: State): Option[Move] = {
     val moves = game.getValidMoves(state)
     if (moves.isEmpty) None
     else Some(randomIn(moves))
   }
-
-  private def randomIn[A](arr: Seq[A]): A = arr(Random.nextInt(arr.length))
 }
