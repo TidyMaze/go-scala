@@ -81,7 +81,7 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
             case other =>
               new Circle() {
                 fill = color
-                radius <== stack.width / 2 - 1
+                radius <== stack.width * 0.8 / 2
               }
           }
         }
