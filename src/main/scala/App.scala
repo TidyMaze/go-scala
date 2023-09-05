@@ -1,16 +1,15 @@
 package fr.yaro.go
 
-import ai.RandomAI
-import engine.{Custom, GoGame}
-import ui.{ConsoleView, GUIView, View}
+import ai.{AI, BestKillingMoveAI}
+import engine.{Custom, Game}
+import ui.{GUIView, View}
 
-import java.util.concurrent.{Executor, ForkJoinPool}
+import java.util.concurrent.ForkJoinPool
 import scala.concurrent.ExecutionContext
 
-class Controller(view: View) {
+class Controller(view: View, ai: AI) {
   def startGame() = {
-    val game = new GoGame()
-    val goAI = new RandomAI()
+    val game = new Game()
     var state = game.initialState(Custom(9))
 
     view.render(state)
@@ -19,7 +18,7 @@ class Controller(view: View) {
       // clean the console
       print("\u001b[H\u001b[2J")
 
-      val move = goAI.findBestMove(game, state)
+      val move = ai.findBestMove(game, state)
       move match {
         case Some(m) =>
           state = game.play(state, m)
@@ -35,13 +34,15 @@ class Controller(view: View) {
   }
 }
 
-object GoApp {
+object App {
 
   def main(args: Array[String]): Unit = {
     implicit val ec: ExecutionContext =
       ExecutionContext.fromExecutor(new ForkJoinPool())
+
+    val ai = new BestKillingMoveAI()
     val view = new GUIView()
-    val controller = new Controller(view)
+    val controller = new Controller(view, ai)
     controller.startGame()
   }
 }

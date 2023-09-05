@@ -1,8 +1,8 @@
 package fr.yaro.go
 package ai
 
-import engine.{GoGame, Move, State}
+import engine.{Game, Move, State}
 
 trait AI {
-  def findBestMove(game: GoGame, state: State): Option[Move]
+  def findBestMove(game: Game, state: State): Option[Move]
 }

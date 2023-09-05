@@ -1,9 +1,7 @@
 package fr.yaro.go
 package engine
 
-import engine.{Black, Color, Coord, White}
-
-class GoGame {
+class Game {
   def initialState(gridSize: GridSize): State =
     State(
       Grid.empty(gridSize.getSize),
@@ -15,10 +13,6 @@ class GoGame {
 
   def play(state: State, move: Move): State = {
     val killedGroups = getKilledGroups(state, move.coord)
-
-//    if (killedGroups.nonEmpty) {
-//      println(s"Killed groups: $killedGroups")
-//    }
 
     val newGrid =
       put(removeKilledGroups(state.grid, killedGroups), move, state.turn)
