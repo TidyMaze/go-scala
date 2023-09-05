@@ -30,7 +30,7 @@ class Controller(view: View) {
           println(s"${state.turn.opponent} passed")
       }
 
-      Thread.sleep(5000)
+      Thread.sleep(1000)
     }
   }
 }
