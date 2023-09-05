@@ -94,12 +94,14 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
     grid.columnConstraints = (0 until 9).map { _ =>
       new scalafx.scene.layout.ColumnConstraints() {
         hgrow = Priority.Always
+        prefWidth <== grid.width / 9
       }
     }
 
     grid.rowConstraints = (0 until 9).map { _ =>
       new scalafx.scene.layout.RowConstraints() {
         vgrow = Priority.Always
+        prefHeight <== grid.height / 9
       }
     }
 
