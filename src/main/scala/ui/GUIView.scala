@@ -100,8 +100,6 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
 
     val grid = new GridPane() {
       alignment = Pos.Center
-      prefWidth = 400
-      prefHeight = 400
       hgrow = Priority.Always
       vgrow = Priority.Always
       border = new Border(
