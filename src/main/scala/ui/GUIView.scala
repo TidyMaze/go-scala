@@ -89,6 +89,8 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
     val cells = (0 to 9 map { i: Int =>
       0 to 9 map { j =>
         new Button(s"$i,$j") {
+          maxWidth = Double.MaxValue
+          maxHeight = Double.MaxValue
           onAction = _ => {
             println(s"clicked $i,$j")
           }
@@ -98,8 +100,8 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
 
     val grid = new GridPane() {
       alignment = Pos.Center
-      prefWidth = 100
-      prefHeight = 200
+      prefWidth = 400
+      prefHeight = 400
       hgrow = Priority.Always
       vgrow = Priority.Always
       border = new Border(
@@ -150,6 +152,8 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
     stage = new PrimaryStage {
       title = "Go"
       scene = s
+      width = 800
+      height = 800
     }
 
     vBox.prefWidth <== s.width
