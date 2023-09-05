@@ -13,7 +13,13 @@ import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.{Button, Label}
 import scalafx.scene.layout._
-import scalafx.scene.paint.{Color, CycleMethod, RadialGradient, Stop}
+import scalafx.scene.paint.{
+  Color,
+  CycleMethod,
+  LinearGradient,
+  RadialGradient,
+  Stop
+}
 import scalafx.scene.shape.Circle
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -21,7 +27,6 @@ import scala.util.{Failure, Success}
 
 class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
   var text: Label = null
-  var text2: Label = null
 
   // watchable count
   var frame = 0
@@ -29,6 +34,7 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
   var cells: Seq[Seq[StackPane]] = null
 
   val backgroundColor = Color.rgb(219, 167, 94)
+  val backgroundColor2 = backgroundColor.darker
 
   var cellLength: NumberBinding = null
 
@@ -61,7 +67,7 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
       state.grid.grid.zipWithIndex.foreach { case (row, i) =>
         row.zipWithIndex.foreach { case (cell, j) =>
           val color = cell match {
-            case None => backgroundColor
+            case None => Color.Transparent
             case Some(Black) =>
               RadialGradient(
                 0,
@@ -84,7 +90,7 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
                 true,
                 CycleMethod.NoCycle,
                 Stop(0, Color.White),
-                Stop(1, Color.White.deriveColor(1.0, 1.0, 0.9, 1))
+                Stop(1, Color.White.deriveColor(1.0, 1.0, 0.8, 1))
               )
           }
 
@@ -143,7 +149,16 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
       background = new Background(
         Array(
           new BackgroundFill(
-            backgroundColor,
+            LinearGradient(
+              0,
+              0,
+              1,
+              1,
+              true,
+              CycleMethod.NoCycle,
+              Stop(0, backgroundColor),
+              Stop(1, backgroundColor2)
+            ),
             CornerRadii.Empty,
             Insets.Empty
           )
