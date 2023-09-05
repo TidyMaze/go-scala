@@ -107,7 +107,7 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
           Color.Red,
           BorderStrokeStyle.Dashed,
           CornerRadii.Empty,
-          new BorderWidths(10)
+          new BorderWidths(1)
         )
       )
     }
@@ -137,7 +137,7 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
           Color.Green,
           BorderStrokeStyle.Dashed,
           CornerRadii.Empty,
-          new BorderWidths(10)
+          new BorderWidths(1)
         )
       )
     }
