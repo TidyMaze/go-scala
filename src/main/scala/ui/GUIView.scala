@@ -2,24 +2,15 @@ package fr.yaro.go
 package ui
 import engine.{Black, State, White}
 
-import javafx.beans.binding
-import javafx.beans.binding.DoubleBinding
-import javafx.beans.value.ObservableNumberValue
-import scalafx.Includes
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.beans.binding.{Bindings, NumberBinding}
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.{Button, Label}
+import scalafx.scene.effect.BoxBlur
 import scalafx.scene.layout._
-import scalafx.scene.paint.{
-  Color,
-  CycleMethod,
-  LinearGradient,
-  RadialGradient,
-  Stop
-}
+import scalafx.scene.paint._
 import scalafx.scene.shape.Circle
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -74,7 +65,7 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
                 0,
                 0.3,
                 0.3,
-                0.4,
+                0.6,
                 true,
                 CycleMethod.NoCycle,
                 Stop(0, Color.Black.deriveColor(1.0, 1.0, 10, 1.0)),
@@ -86,7 +77,7 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
                 0,
                 0.3,
                 0.3,
-                0.4,
+                0.6,
                 true,
                 CycleMethod.NoCycle,
                 Stop(0, Color.White),
@@ -116,9 +107,24 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
               }
 
             case other =>
-              new Circle() {
-                fill = color
-                radius <== cellLength / 2 * 0.8
+              new StackPane() {
+                val shadow: Circle = new Circle() {
+                  fill = Color.rgb(0, 0, 0, 0.5)
+                  radius <== cellLength / 2 * 0.8
+                }
+
+                shadow.translateX <== cellLength / 2 * 0.2
+                shadow.translateY <== cellLength / 2 * 0.2
+
+                val bb = new BoxBlur(10, 10, 5)
+
+                shadow.effect = bb
+
+                val stone: Circle = new Circle() {
+                  fill = color
+                  radius <== cellLength / 2 * 0.8
+                }
+                children = Seq(shadow, stone)
               }
           }
         }
