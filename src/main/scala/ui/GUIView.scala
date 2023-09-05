@@ -2,8 +2,13 @@ package fr.yaro.go
 package ui
 import engine.{Black, State, White}
 
+import javafx.beans.binding
+import javafx.beans.binding.DoubleBinding
+import javafx.beans.value.ObservableNumberValue
+import scalafx.Includes
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.application.{JFXApp3, Platform}
+import scalafx.beans.binding.{Bindings, NumberBinding}
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.{Button, Label}
@@ -24,6 +29,8 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
   var cells: Seq[Seq[StackPane]] = null
 
   val backgroundColor = Color.rgb(219, 167, 94)
+
+  var cellLength: NumberBinding = null
 
   Future {
     println("starting GUI in background")
@@ -67,11 +74,13 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
                 maxWidth = Double.MaxValue
                 maxHeight = Double.MaxValue
                 background = new Background(
-                  Array(new BackgroundFill(
-                    Color.Transparent,
-                    CornerRadii.Empty,
-                    Insets.Empty
-                  ))
+                  Array(
+                    new BackgroundFill(
+                      Color.Transparent,
+                      CornerRadii.Empty,
+                      Insets.Empty
+                    )
+                  )
                 )
                 onAction = _ => {
                   println(s"clicked $i,$j")
@@ -81,7 +90,7 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
             case other =>
               new Circle() {
                 fill = color
-                radius <== stack.width * 0.8 / 2
+                radius <== cellLength / 2 * 0.8
               }
           }
         }
@@ -89,12 +98,18 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
     }
   }
 
+  def min(binding: NumberBinding, binding1: NumberBinding): NumberBinding =
+    Bindings
+      .`when`(binding.lessThan(binding1))
+      .choose(binding)
+      .otherwise(binding1)
+
   override def start(): Unit = {
 
     val grid = new GridPane() {
       alignment = Pos.Center
-      hgrow = Priority.Always
-      vgrow = Priority.Always
+      hgrow = Priority.Never
+      vgrow = Priority.Never
       border = new Border(
         new BorderStroke(
           Color.Red,
@@ -104,11 +119,13 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
         )
       )
       background = new Background(
-        Array(new BackgroundFill(
-          backgroundColor,
-          CornerRadii.Empty,
-          Insets.Empty
-        ))
+        Array(
+          new BackgroundFill(
+            backgroundColor,
+            CornerRadii.Empty,
+            Insets.Empty
+          )
+        )
       )
     }
 
@@ -118,25 +135,9 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
       }
     })
 
-
-
     cells.zipWithIndex.foreach { case (row, i) =>
       row.zipWithIndex.foreach { case (cell, j) =>
         grid.add(cell, j, i)
-      }
-    }
-
-    grid.columnConstraints = (0 until 9).map { _ =>
-      new scalafx.scene.layout.ColumnConstraints() {
-        hgrow = Priority.Always
-        prefWidth <== grid.width / 9
-      }
-    }
-
-    grid.rowConstraints = (0 until 9).map { _ =>
-      new scalafx.scene.layout.RowConstraints() {
-        vgrow = Priority.Always
-        prefHeight <== grid.height / 9
       }
     }
 
@@ -153,8 +154,29 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
     }
 
     val s = new Scene {
-      fill = Color.rgb(0, 0, 200)
+      fill = Color.DarkSlateGrey
       content = vBox
+    }
+
+    cellLength = min(s.width / 9, s.height / 9)
+
+    grid.prefWidth <== cellLength * 9
+    grid.prefHeight <== cellLength * 9
+    grid.maxWidth <== cellLength * 9
+    grid.maxHeight <== cellLength * 9
+
+    grid.columnConstraints = (0 until 9).map { _ =>
+      new scalafx.scene.layout.ColumnConstraints() {
+        hgrow = Priority.Always
+        prefWidth <== cellLength
+      }
+    }
+
+    grid.rowConstraints = (0 until 9).map { _ =>
+      new scalafx.scene.layout.RowConstraints() {
+        vgrow = Priority.Always
+        prefHeight <== cellLength
+      }
     }
 
     stage = new PrimaryStage {
