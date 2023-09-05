@@ -13,7 +13,7 @@ import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.Scene
 import scalafx.scene.control.{Button, Label}
 import scalafx.scene.layout._
-import scalafx.scene.paint.Color
+import scalafx.scene.paint.{Color, CycleMethod, RadialGradient, Stop}
 import scalafx.scene.shape.Circle
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -61,9 +61,31 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
       state.grid.grid.zipWithIndex.foreach { case (row, i) =>
         row.zipWithIndex.foreach { case (cell, j) =>
           val color = cell match {
-            case None        => backgroundColor
-            case Some(Black) => Color.Black
-            case Some(White) => Color.White
+            case None => backgroundColor
+            case Some(Black) =>
+              RadialGradient(
+                0,
+                0,
+                0.3,
+                0.3,
+                0.4,
+                true,
+                CycleMethod.NoCycle,
+                Stop(0, Color.Black.deriveColor(1.0, 1.0, 10, 1.0)),
+                Stop(1, Color.Black)
+              )
+            case Some(White) =>
+              RadialGradient(
+                0,
+                0,
+                0.3,
+                0.3,
+                0.4,
+                true,
+                CycleMethod.NoCycle,
+                Stop(0, Color.White),
+                Stop(1, Color.White.deriveColor(1.0, 1.0, 0.9, 1))
+              )
           }
 
           val stack = cells(i)(j)
