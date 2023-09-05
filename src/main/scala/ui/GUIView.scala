@@ -20,7 +20,7 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
   // watchable count
   var frame = 0
 
-  var cells: Seq[Seq[Button]] = null
+  var cells: Seq[Seq[(Button, StackPane)]] = null
 
   Future {
     println("starting GUI in background")
@@ -59,8 +59,8 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
           }
 
           val button = cells(i)(j)
-          button.text = cell.toString
-          button.background = new Background(Array(new BackgroundFill(color, CornerRadii.Empty, Insets.Empty)))
+          button._1.text = cell.toString
+          button._1.background = new Background(Array(new BackgroundFill(color, CornerRadii.Empty, Insets.Empty)))
         }
       }
     }
@@ -84,19 +84,28 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
 
     cells = (0 until 9 map { i: Int =>
       0 until 9 map { j =>
-        new Button(s"$i,$j") {
+
+        val stack = new StackPane() {
+
+        }
+
+        val button = new Button(s"$i,$j") {
           maxWidth = Double.MaxValue
           maxHeight = Double.MaxValue
           onAction = _ => {
             println(s"clicked $i,$j")
           }
         }
+
+        stack.children.add(button)
+
+        (button, stack)
       }
     })
 
     cells.zipWithIndex.foreach { case (row, i) =>
       row.zipWithIndex.foreach { case (cell, j) =>
-        grid.add(cell, j, i)
+        grid.add(cell._2, j, i)
       }
     }
 
