@@ -9,6 +9,7 @@ import scalafx.scene.Scene
 import scalafx.scene.control.{Button, Label}
 import scalafx.scene.layout._
 import scalafx.scene.paint.Color
+import scalafx.scene.shape.Circle
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
@@ -20,7 +21,9 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
   // watchable count
   var frame = 0
 
-  var cells: Seq[Seq[(Button, StackPane)]] = null
+  var cells: Seq[Seq[StackPane]] = null
+
+  val backgroundColor = Color.rgb(219, 167, 94)
 
   Future {
     println("starting GUI in background")
@@ -44,8 +47,6 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
       return
     }
 
-    val backgroundColor = Color.rgb(219, 167, 94)
-
     Platform.runLater {
       println("running later frame " + frame)
 
@@ -53,14 +54,36 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
       state.grid.grid.zipWithIndex.foreach { case (row, i) =>
         row.zipWithIndex.foreach { case (cell, j) =>
           val color = cell match {
-            case None => backgroundColor
+            case None        => backgroundColor
             case Some(Black) => Color.Black
             case Some(White) => Color.White
           }
 
-          val button = cells(i)(j)
-          button._1.text = cell.toString
-          button._1.background = new Background(Array(new BackgroundFill(color, CornerRadii.Empty, Insets.Empty)))
+          val stack = cells(i)(j)
+
+          stack.children = cell match {
+            case None =>
+              new Button() {
+                maxWidth = Double.MaxValue
+                maxHeight = Double.MaxValue
+                background = new Background(
+                  Array(new BackgroundFill(
+                    Color.Transparent,
+                    CornerRadii.Empty,
+                    Insets.Empty
+                  ))
+                )
+                onAction = _ => {
+                  println(s"clicked $i,$j")
+                }
+              }
+
+            case other =>
+              new Circle() {
+                fill = color
+                radius <== stack.width / 2
+              }
+          }
         }
       }
     }
@@ -80,32 +103,26 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
           new BorderWidths(1)
         )
       )
+      background = new Background(
+        Array(new BackgroundFill(
+          backgroundColor,
+          CornerRadii.Empty,
+          Insets.Empty
+        ))
+      )
     }
 
     cells = (0 until 9 map { i: Int =>
       0 until 9 map { j =>
-
-        val stack = new StackPane() {
-
-        }
-
-        val button = new Button(s"$i,$j") {
-          maxWidth = Double.MaxValue
-          maxHeight = Double.MaxValue
-          onAction = _ => {
-            println(s"clicked $i,$j")
-          }
-        }
-
-        stack.children.add(button)
-
-        (button, stack)
+        new StackPane()
       }
     })
 
+
+
     cells.zipWithIndex.foreach { case (row, i) =>
       row.zipWithIndex.foreach { case (cell, j) =>
-        grid.add(cell._2, j, i)
+        grid.add(cell, j, i)
       }
     }
 
