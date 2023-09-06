@@ -109,9 +109,18 @@ class Game {
   ): Set[Set[Coord]] = {
     val neighbors = getNeighbors(state, coord)
     val groups = neighbors
-      .filter(c => state.grid(c).contains(ofColor))
-      .flatMap(getGroup(state, _))
-    groups.toSet
+      .foldLeft((Set.empty[Coord], Set.empty[Set[Coord]])) {
+        case ((alreadyFoundCoords, resultGroups), c)
+            if state.grid(c).contains(ofColor) &&
+              !alreadyFoundCoords.contains(c) =>
+          val newGroup = getGroup(state, c)
+          (
+            alreadyFoundCoords ++ newGroup.toSet.flatten,
+            resultGroups ++ newGroup
+          )
+        case (other, _) => other
+      }
+    groups._2
   }
 
   def getGroup(state: State, coord: Coord): Option[Set[Coord]] = {
