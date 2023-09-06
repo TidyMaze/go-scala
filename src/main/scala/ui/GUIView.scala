@@ -2,6 +2,7 @@ package fr.yaro.go
 package ui
 import engine.{Black, State, White}
 
+import scalafx.Includes.when
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.beans.binding.{Bindings, NumberBinding}
@@ -36,6 +37,26 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
   private val whiteStoneLightColor = Stop(0, Color.White)
   private val whiteStoneDarkColor =
     Stop(1, Color.White.deriveColor(1.0, 1.0, 0.8, 1))
+
+  private val backgroundButton = new Background(
+    Array(
+      new BackgroundFill(
+        Color.Transparent,
+        CornerRadii.Empty,
+        Insets.Empty
+      )
+    )
+  )
+
+  private val backgroundButtonHover = new Background(
+    Array(
+      new BackgroundFill(
+        Color.Red,
+        CornerRadii.Empty,
+        Insets.Empty
+      )
+    )
+  )
 
   Future {
     println("starting GUI in background")
@@ -199,23 +220,19 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
 
     cells.zipWithIndex.foreach { case (row, i) =>
       row.zipWithIndex.foreach { case (cell, j) =>
+        val button = new Button() {
+          maxWidth = Double.MaxValue
+          maxHeight = Double.MaxValue
+
+          background <== when(hover)
+            .choose(backgroundButtonHover)
+            .otherwise(backgroundButton)
+          onAction = _ => {
+            println(s"clicked $i,$j")
+          }
+        }
         cell.children = Seq(
-          new Button() {
-            maxWidth = Double.MaxValue
-            maxHeight = Double.MaxValue
-            background = new Background(
-              Array(
-                new BackgroundFill(
-                  Color.Transparent,
-                  CornerRadii.Empty,
-                  Insets.Empty
-                )
-              )
-            )
-            onAction = _ => {
-              println(s"clicked $i,$j")
-            }
-          },
+          button,
           makeStone(makeStoneColor(Some(Black))),
           makeStone(makeStoneColor(Some(White)))
         ).asInstanceOf[Seq[Node]]
