@@ -17,9 +17,12 @@ class Controller(view: View, ai: AI) {
 
     view.render(state)
 
-    startTime = System.currentTimeMillis()
-
     while (!game.isOver(state)) {
+      if (startTime == 0 && turn > 1000) {
+        startTime = System.currentTimeMillis()
+        turn = 0
+      }
+
       // clean the console
       print("\u001b[H\u001b[2J")
 
@@ -34,10 +37,14 @@ class Controller(view: View, ai: AI) {
           println(s"${state.turn.opponent} passed")
       }
 
-//      Thread.sleep(100)
       turn += 1
 
-      println(s"Average time per turn: ${(System.currentTimeMillis().toDouble - startTime.toDouble) / turn.toDouble}ms")
+      println(s"Turn $turn started at ${startTime}")
+
+//      Thread.sleep(100)
+      if(startTime != 0) {
+        println(s"Average time per turn: ${(System.currentTimeMillis().toDouble - startTime.toDouble) / turn.toDouble}ms")
+      }
     }
   }
 }
