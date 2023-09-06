@@ -97,13 +97,12 @@ class Game {
     adjacentGroups.filter { group =>
       val color = state.at(group.head).get
 
-      val liberties = getLiberties(state, group.head)
-//      println(
-//        s"Group $group of color $color has ${liberties.get.size} liberties: ${liberties.get}"
-//      )
-      color == state.turn.opponent && liberties.exists(l =>
-        l.size == 1 && l.head == from
-      )
+      if (color != state.turn.opponent) {
+        false
+      } else {
+        val liberties = getLiberties(state, group.head)
+        liberties.exists(l => l.size == 1 && l.head == from)
+      }
     }
   }
 
