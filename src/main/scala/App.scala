@@ -8,11 +8,16 @@ import java.util.concurrent.ForkJoinPool
 import scala.concurrent.ExecutionContext
 
 class Controller(view: View, ai: AI) {
+  var turn = 0
+  var startTime: Long = 0
+
   def startGame() = {
     val game = new Game()
     var state = game.initialState(Custom(9))
 
     view.render(state)
+
+    startTime = System.currentTimeMillis()
 
     while (!game.isOver(state)) {
       // clean the console
@@ -29,7 +34,10 @@ class Controller(view: View, ai: AI) {
           println(s"${state.turn.opponent} passed")
       }
 
-      Thread.sleep(100)
+//      Thread.sleep(100)
+      turn += 1
+
+      println(s"Average time per turn: ${(System.currentTimeMillis() - startTime) / turn}ms")
     }
   }
 }
