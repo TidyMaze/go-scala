@@ -33,7 +33,7 @@ class Game {
   def put(grid: Grid, move: Move, color: Color): Grid =
     grid.updated(move.coord, Some(color))
 
-  def removeKilledGroups(grid: Grid, killedGroups: Set[Set[Coord]]): Grid = {
+  def removeKilledGroups(grid: Grid, killedGroups: Seq[Set[Coord]]): Grid = {
     killedGroups.foldLeft(grid) { (grid, group) =>
       group.foldLeft(grid) { (grid, coord) =>
         grid.updated(coord, None)
@@ -94,7 +94,7 @@ class Game {
     blackPassed && whitePassed
   }
 
-  def getKilledGroups(state: State, from: Coord): Set[Set[Coord]] = {
+  def getKilledGroups(state: State, from: Coord): Seq[Set[Coord]] = {
     val adjacentGroups = getAdjacentGroups(state, from, state.turn.opponent)
     adjacentGroups.filter { group =>
       val liberties = getLiberties(state, group.head)
@@ -106,10 +106,10 @@ class Game {
       state: State,
       coord: Coord,
       ofColor: Color
-  ): Set[Set[Coord]] = {
+  ): Seq[Set[Coord]] = {
     val neighbors = getNeighborsMemo(state.gridSize, coord)
     val groups = neighbors
-      .foldLeft((Set.empty[Coord], Set.empty[Set[Coord]])) {
+      .foldLeft((Set.empty[Coord], Seq.empty[Set[Coord]])) {
         case ((alreadyFoundCoords, resultGroups), c)
             if state.grid(c).contains(ofColor) &&
               !alreadyFoundCoords.contains(c) =>
