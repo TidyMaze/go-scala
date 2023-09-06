@@ -6,7 +6,7 @@ import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.beans.binding.{Bindings, NumberBinding}
 import scalafx.geometry.{Insets, Pos}
-import scalafx.scene.Scene
+import scalafx.scene.{Node, Scene}
 import scalafx.scene.control.{Button, Label}
 import scalafx.scene.effect.BoxBlur
 import scalafx.scene.layout._
@@ -65,58 +65,49 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
       // update grid cells
       state.grid.grid.zipWithIndex.foreach { case (row, i) =>
         row.zipWithIndex.foreach { case (cell, j) =>
-          val color = cell match {
-            case None => Color.Transparent
-            case Some(Black) =>
-              makeStoneColor(blackStoneLightColor, blackStoneDarkColor)
-            case Some(White) =>
-              makeStoneColor(whiteStoneLightColor, whiteStoneDarkColor)
-          }
+          makeStoneColor(cell)
 
           val stack = cells(i)(j)
 
-          stack.children = cell match {
-            case None =>
-              new Button() {
-                maxWidth = Double.MaxValue
-                maxHeight = Double.MaxValue
-                background = new Background(
-                  Array(
-                    new BackgroundFill(
-                      Color.Transparent,
-                      CornerRadii.Empty,
-                      Insets.Empty
-                    )
-                  )
-                )
-                onAction = _ => {
-                  println(s"clicked $i,$j")
-                }
-              }
+          // set black stone opacity to 1 if black stone is present
+          stack.children(1).setOpacity(if (cell.contains(Black)) 1 else 0)
 
-            case other =>
-              new StackPane() {
-                val shadow: Circle = new Circle() {
-                  fill = Color.rgb(0, 0, 0, 0.5)
-                  radius <== cellLength / 2 * 0.8
-                }
-
-                shadow.translateX <== cellLength / 2 * 0.2
-                shadow.translateY <== cellLength / 2 * 0.2
-
-                val bb = new BoxBlur(10, 10, 5)
-
-                shadow.effect = bb
-
-                val stone: Circle = new Circle() {
-                  fill = color
-                  radius <== cellLength / 2 * 0.8
-                }
-                children = Seq(shadow, stone)
-              }
-          }
+          // set white stone opacity to 1 if white stone is present
+          stack.children(2).setOpacity(if (cell.contains(White)) 1 else 0)
         }
       }
+    }
+  }
+
+  private def makeStoneColor(cell: Option[engine.Color]): Paint = {
+    cell match {
+      case None => Color.Transparent
+      case Some(Black) =>
+        makeStoneColor(blackStoneLightColor, blackStoneDarkColor)
+      case Some(White) =>
+        makeStoneColor(whiteStoneLightColor, whiteStoneDarkColor)
+    }
+  }
+
+  def makeStone(color: Paint): StackPane = {
+    val shadow: Circle = new Circle() {
+      fill = Color.rgb(0, 0, 0, 0.5)
+      radius <== cellLength / 2 * 0.8
+    }
+
+    shadow.translateX <== cellLength / 2 * 0.2
+    shadow.translateY <== cellLength / 2 * 0.2
+
+    val bb = new BoxBlur(10, 10, 5)
+
+    shadow.effect = bb
+
+    val stone: Circle = new Circle() {
+      fill = color
+      radius <== cellLength / 2 * 0.8
+    }
+    new StackPane() {
+      children = Seq(shadow, stone)
     }
   }
 
@@ -207,6 +198,31 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
     }
 
     cellLength = min(s.width / 9, s.height / 9)
+
+    cells.zipWithIndex.foreach { case (row, i) =>
+      row.zipWithIndex.foreach { case (cell, j) =>
+        cell.children = Seq(
+          new Button() {
+            maxWidth = Double.MaxValue
+            maxHeight = Double.MaxValue
+            background = new Background(
+              Array(
+                new BackgroundFill(
+                  Color.Transparent,
+                  CornerRadii.Empty,
+                  Insets.Empty
+                )
+              )
+            )
+            onAction = _ => {
+              println(s"clicked $i,$j")
+            }
+          },
+          makeStone(makeStoneColor(Some(Black))),
+          makeStone(makeStoneColor(Some(White)))
+        ).asInstanceOf[Seq[Node]]
+      }
+    }
 
     grid.prefWidth <== cellLength * 9
     grid.prefHeight <== cellLength * 9
