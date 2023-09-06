@@ -128,10 +128,10 @@ class Game {
 
     color match {
       case None => None
-      case Some(c) => {
-        var res = mutable.Set.empty[Coord]
-        var visited = mutable.Set.empty[Coord]
-        var toVisit = mutable.Set(coord)
+      case Some(c) =>
+        val res = mutable.Set.empty[Coord]
+        val visited = mutable.Set.empty[Coord]
+        val toVisit = mutable.Set(coord)
 
         while (toVisit.nonEmpty) {
           val current = toVisit.head
@@ -146,7 +146,6 @@ class Game {
         }
 
         Some(res.toSet)
-      }
     }
   }
 
