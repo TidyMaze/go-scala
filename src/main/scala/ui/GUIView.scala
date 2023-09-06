@@ -3,6 +3,7 @@ package ui
 import engine.{Black, State, White}
 
 import scalafx.Includes.when
+import scalafx.animation.TranslateTransition
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.beans.binding.{Bindings, NumberBinding}
@@ -13,6 +14,7 @@ import scalafx.scene.effect.BoxBlur
 import scalafx.scene.layout._
 import scalafx.scene.paint._
 import scalafx.scene.shape.Circle
+import scalafx.util.Duration
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
@@ -88,11 +90,83 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
         row.zipWithIndex.foreach { case (cell, j) =>
           val stack = cells(i)(j)
 
-          // set black stone opacity to 1 if black stone is present
-          stack.children(1).setOpacity(if (cell.contains(Black)) 1 else 0)
+          val addBlack =
+            cell.contains(Black) && stack.children(1).getOpacity == 0.0
+          val addWhite =
+            cell.contains(White) && stack.children(2).getOpacity == 0.0
 
-          // set white stone opacity to 1 if white stone is present
-          stack.children(2).setOpacity(if (cell.contains(White)) 1 else 0)
+          val removeBlack =
+            !cell.contains(Black) && stack.children(1).getOpacity == 1.0
+          val removeWhite =
+            !cell.contains(White) && stack.children(2).getOpacity == 1.0
+
+          if (addBlack) {
+            val animation = new TranslateTransition() {
+              node = new StackPane(
+                stack.children(1).asInstanceOf[javafx.scene.layout.StackPane]
+              )
+              duration = new Duration(100)
+
+              fromX = 0
+              fromY = -50
+              toX = 0
+              toY = 0
+            }
+
+            stack.children(1).setOpacity(1)
+
+            animation.play()
+          } else if (removeBlack) {
+            val animation = new TranslateTransition() {
+              node = new StackPane(
+                stack.children(1).asInstanceOf[javafx.scene.layout.StackPane]
+              )
+              duration = new Duration(100)
+
+              fromX = 0
+              fromY = 0
+              toX = 0
+              toY = 1000
+            }
+
+            animation.play()
+
+            stack.children(1).setOpacity(0)
+          }
+
+          if (addWhite) {
+            val animation = new TranslateTransition() {
+              node = new StackPane(
+                stack.children(2).asInstanceOf[javafx.scene.layout.StackPane]
+              )
+              duration = new Duration(100)
+
+              fromX = 0
+              fromY = -50
+              toX = 0
+              toY = 0
+            }
+
+            stack.children(2).setOpacity(1)
+
+            animation.play()
+          } else if (removeWhite) {
+            val animation = new TranslateTransition() {
+              node = new StackPane(
+                stack.children(2).asInstanceOf[javafx.scene.layout.StackPane]
+              )
+              duration = new Duration(100)
+
+              fromX = 0
+              fromY = 0
+              toX = 0
+              toY = 1000
+            }
+
+            animation.play()
+
+            stack.children(2).setOpacity(0)
+          }
         }
       }
     }
