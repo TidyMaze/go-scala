@@ -65,8 +65,6 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
       // update grid cells
       state.grid.grid.zipWithIndex.foreach { case (row, i) =>
         row.zipWithIndex.foreach { case (cell, j) =>
-          makeStoneColor(cell)
-
           val stack = cells(i)(j)
 
           // set black stone opacity to 1 if black stone is present
