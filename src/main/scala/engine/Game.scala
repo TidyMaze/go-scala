@@ -1,7 +1,7 @@
 package fr.yaro.go
 package engine
 
-import scala.collection.mutable
+import scala.collection.{View, mutable}
 
 class Game {
   def initialState(gridSize: GridSize): State =
@@ -109,11 +109,9 @@ class Game {
   ): Set[Set[Coord]] = {
     val neighbors = getNeighbors(state, coord)
     val groups = neighbors
-      .view
       .filter(c => state.grid(c).contains(ofColor))
       .flatMap(getGroup(state, _))
-      .toSet
-    groups
+    groups.toSet
   }
 
   def getGroup(state: State, coord: Coord): Option[Set[Coord]] = {
@@ -158,7 +156,7 @@ class Game {
       Coord(coord.x, coord.y - 1),
       Coord(coord.x, coord.y + 1)
     )
-    neighbors.filter(isValidCoord(state, _))
+    neighbors.view.filter(isValidCoord(state, _))
   }
 
   def isValidCoord(state: State, coord: Coord): Boolean = {
