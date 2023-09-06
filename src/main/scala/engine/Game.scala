@@ -107,7 +107,7 @@ class Game {
       coord: Coord,
       ofColor: Color
   ): Set[Set[Coord]] = {
-    val neighbors = getNeighbors(state, coord)
+    val neighbors = getNeighborsMemo(state.gridSize, coord)
     val groups = neighbors
       .foldLeft((Set.empty[Coord], Set.empty[Set[Coord]])) {
         case ((alreadyFoundCoords, resultGroups), c)
@@ -139,7 +139,7 @@ class Game {
           visited.addOne(current)
           if (state.at(current).contains(c)) {
             res.addOne(current)
-            val neighbors = getNeighbors(state, current)
+            val neighbors = getNeighborsMemo(state.gridSize, current)
             val newNeighbors = neighbors.filterNot(visited.contains)
             toVisit.addAll(newNeighbors)
           }
@@ -154,22 +154,30 @@ class Game {
     // count the number of empty cells around the group
     val group = getGroup(state, coord)
     group.map { group =>
-      group.flatMap(getNeighbors(state, _)).filter(state.at(_).isEmpty)
+      group.flatMap(getNeighborsMemo(state.gridSize, _)).filter(state.at(_).isEmpty)
     }
   }
 
-  def getNeighbors(state: State, coord: Coord) = {
+  // memoize the result of getNeighbors
+  val getNeighborsMemo =
+    Function.untupled(memoize((getNeighbors _).tupled).apply _)
+
+  def memoize[A, B](function: A => B): mutable.Map[A, B] =
+    new mutable.HashMap[A, B]() {
+      override def apply(key: A) = getOrElseUpdate(key, function(key))
+    }
+
+  def getNeighbors(gridSize: Int, coord: Coord) = {
     val neighbors = Seq(
       Coord(coord.x - 1, coord.y),
       Coord(coord.x + 1, coord.y),
       Coord(coord.x, coord.y - 1),
       Coord(coord.x, coord.y + 1)
     )
-    neighbors.filter(isValidCoord(state, _))
+    neighbors.filter(isValidCoord(gridSize, _))
   }
 
-  def isValidCoord(state: State, coord: Coord): Boolean = {
-    val gridSize = state.grid.size
+  def isValidCoord(gridSize: Int, coord: Coord): Boolean = {
     coord.x >= 0 && coord.x < gridSize && coord.y >= 0 && coord.y < gridSize
   }
 }
