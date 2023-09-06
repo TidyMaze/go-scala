@@ -97,8 +97,8 @@ class Game {
   def getKilledGroups(state: State, from: Coord): Seq[Set[Coord]] = {
     val adjacentGroups = getAdjacentGroups(state, from, state.turn.opponent)
     adjacentGroups.filter { group =>
-      val liberties = getLiberties(state, group.head)
-      liberties.exists(l => l.size == 1 && l.head == from)
+      val liberties = getLiberties(state, group)
+      liberties.size == 1 && liberties.head == from
     }
   }
 
@@ -153,10 +153,13 @@ class Game {
   def getLiberties(state: State, coord: Coord): Option[Set[Coord]] = {
     // count the number of empty cells around the group
     val group = getGroup(state, coord)
-    group.map { group =>
-      group.flatMap(getNeighborsMemo(state.gridSize, _)).filter(state.at(_).isEmpty)
-    }
+    group.map { getLiberties(state, _) }
   }
+
+  def getLiberties(state: State, group: Set[Coord]): Set[Coord] =
+    group
+      .flatMap(getNeighborsMemo(state.gridSize, _))
+      .filter(state.at(_).isEmpty)
 
   // memoize the result of getNeighbors
   val getNeighborsMemo =
