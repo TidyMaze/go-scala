@@ -93,22 +93,23 @@ class Game {
   }
 
   def getKilledGroups(state: State, from: Coord): Set[Set[Coord]] = {
-    val adjacentGroups = getAdjacentGroups(state, from)
+    val adjacentGroups = getAdjacentGroups(state, from, state.turn.opponent)
     adjacentGroups.filter { group =>
-      val color = state.at(group.head).get
-
-      if (color != state.turn.opponent) {
-        false
-      } else {
-        val liberties = getLiberties(state, group.head)
-        liberties.exists(l => l.size == 1 && l.head == from)
-      }
+      val liberties = getLiberties(state, group.head)
+      liberties.exists(l => l.size == 1 && l.head == from)
     }
   }
 
-  def getAdjacentGroups(state: State, coord: Coord): Set[Set[Coord]] = {
+  def getAdjacentGroups(
+      state: State,
+      coord: Coord,
+      ofColor: Color
+  ): Set[Set[Coord]] = {
     val neighbors = getNeighbors(state, coord)
-    val groups = neighbors.flatMap(getGroup(state, _)).toSet
+    val groups = neighbors
+      .filter(c => state.grid(c).contains(ofColor))
+      .flatMap(getGroup(state, _))
+      .toSet
     groups
   }
 
