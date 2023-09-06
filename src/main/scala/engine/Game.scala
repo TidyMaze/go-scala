@@ -1,6 +1,8 @@
 package fr.yaro.go
 package engine
 
+import scala.collection.mutable
+
 class Game {
   def initialState(gridSize: GridSize): State =
     State(
@@ -107,6 +109,7 @@ class Game {
   ): Set[Set[Coord]] = {
     val neighbors = getNeighbors(state, coord)
     val groups = neighbors
+      .view
       .filter(c => state.grid(c).contains(ofColor))
       .flatMap(getGroup(state, _))
       .toSet
@@ -119,23 +122,23 @@ class Game {
     color match {
       case None => None
       case Some(c) => {
-        var res = Set.empty[Coord]
-        var visited = Set.empty[Coord]
-        var toVisit = Set(coord)
+        var res = mutable.Set.empty[Coord]
+        var visited = mutable.Set.empty[Coord]
+        var toVisit = mutable.Set(coord)
 
         while (toVisit.nonEmpty) {
           val current = toVisit.head
-          toVisit = toVisit.tail
-          visited = visited + current
+          toVisit.remove(current)
+          visited.addOne(current)
           if (state.at(current).contains(c)) {
-            res = res + current
+            res.addOne(current)
             val neighbors = getNeighbors(state, current)
             val newNeighbors = neighbors.filterNot(visited.contains)
-            toVisit = toVisit ++ newNeighbors
+            toVisit.addAll(newNeighbors)
           }
         }
 
-        Some(res)
+        Some(res.toSet)
       }
     }
   }
