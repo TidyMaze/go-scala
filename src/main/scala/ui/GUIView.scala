@@ -126,12 +126,11 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
               fromX = 0
               fromY = 0
               toX = 0
-              toY = 1000
+              toY = 100
             }
 
             animation.play()
-
-            stack.children(1).setOpacity(0)
+            animation.onFinished = _ => stack.children(1).setOpacity(0)
           }
 
           if (addWhite) {
@@ -160,12 +159,11 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
               fromX = 0
               fromY = 0
               toX = 0
-              toY = 1000
+              toY = 100
             }
 
             animation.play()
-
-            stack.children(2).setOpacity(0)
+            animation.onFinished = _ => stack.children(2).setOpacity(0)
           }
         }
       }
