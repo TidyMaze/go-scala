@@ -60,29 +60,15 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
           val color = cell match {
             case None => Color.Transparent
             case Some(Black) =>
-              RadialGradient(
-                0,
-                0,
-                0.3,
-                0.3,
-                0.6,
-                true,
-                CycleMethod.NoCycle,
-                Stop(0, Color.Black.deriveColor(1.0, 1.0, 10, 1.0)),
-                Stop(1, Color.Black)
-              )
+              val blackStoneLightColor =
+                Stop(0, Color.Black.deriveColor(1.0, 1.0, 10, 1.0))
+              val blackStoneDarkColor = Stop(1, Color.Black)
+              makeStoneColor(blackStoneLightColor, blackStoneDarkColor)
             case Some(White) =>
-              RadialGradient(
-                0,
-                0,
-                0.3,
-                0.3,
-                0.6,
-                true,
-                CycleMethod.NoCycle,
-                Stop(0, Color.White),
+              val whiteStoneLightColor = Stop(0, Color.White)
+              val whiteStoneDarkColor =
                 Stop(1, Color.White.deriveColor(1.0, 1.0, 0.8, 1))
-              )
+              makeStoneColor(whiteStoneLightColor, whiteStoneDarkColor)
           }
 
           val stack = cells(i)(j)
@@ -130,6 +116,23 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
         }
       }
     }
+  }
+
+  private def makeStoneColor(
+      whiteStoneLightColor: Stop,
+      whiteStoneDarkColor: Stop
+  ) = {
+    RadialGradient(
+      0,
+      0,
+      0.3,
+      0.3,
+      0.6,
+      true,
+      CycleMethod.NoCycle,
+      whiteStoneLightColor,
+      whiteStoneDarkColor
+    )
   }
 
   def min(binding: NumberBinding, binding1: NumberBinding): NumberBinding =
