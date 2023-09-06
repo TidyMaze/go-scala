@@ -160,14 +160,27 @@ class Game {
       .flatMap(getNeighborsMemo(state.gridSize, _))
       .filter(state.at(_).isEmpty)
 
-  // memoize the result of getNeighbors
-  val getNeighborsMemo =
-    Function.untupled(memoize((getNeighbors _).tupled).apply _)
+  var neighborsCache = Array.empty[Array[Seq[Coord]]]
 
-  def memoize[A, B](function: A => B): mutable.Map[A, B] =
-    new mutable.HashMap[A, B]() {
-      override def apply(key: A) = getOrElseUpdate(key, function(key))
+  def initNeighborsCache(gridSize: Int) = {
+    neighborsCache = Array.fill(gridSize, gridSize)(Seq.empty)
+    for {
+      x <- 0 until gridSize
+      y <- 0 until gridSize
+      coord = Coord(x, y)
+    } {
+      neighborsCache(y)(x) = getNeighbors(gridSize, coord)
     }
+  }
+
+  // memoize the result of getNeighbors
+  def getNeighborsMemo: (Int, Coord) => Seq[Coord] = (gridSize, coord) => {
+    if (neighborsCache.length != gridSize) {
+      initNeighborsCache(gridSize)
+    }
+
+    neighborsCache(coord.y)(coord.x)
+  }
 
   def getNeighbors(gridSize: Int, coord: Coord) = {
     val neighbors = Seq(
