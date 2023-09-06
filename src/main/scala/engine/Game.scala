@@ -156,7 +156,7 @@ class Game {
       Coord(coord.x, coord.y - 1),
       Coord(coord.x, coord.y + 1)
     )
-    neighbors.view.filter(isValidCoord(state, _))
+    neighbors.filter(isValidCoord(state, _))
   }
 
   def isValidCoord(state: State, coord: Coord): Boolean = {
