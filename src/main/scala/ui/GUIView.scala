@@ -24,10 +24,18 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
 
   var cells: Seq[Seq[StackPane]] = null
 
-  val backgroundColor = Color.rgb(219, 167, 94)
-  val backgroundColor2 = backgroundColor.darker
+  private val backgroundColor = Color.rgb(219, 167, 94)
+  private val backgroundColor2 = backgroundColor.darker
 
   var cellLength: NumberBinding = null
+
+  private val blackStoneLightColor =
+    Stop(0, Color.Black.deriveColor(1.0, 1.0, 10, 1.0))
+  private val blackStoneDarkColor = Stop(1, Color.Black)
+
+  private val whiteStoneLightColor = Stop(0, Color.White)
+  private val whiteStoneDarkColor =
+    Stop(1, Color.White.deriveColor(1.0, 1.0, 0.8, 1))
 
   Future {
     println("starting GUI in background")
@@ -60,14 +68,8 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
           val color = cell match {
             case None => Color.Transparent
             case Some(Black) =>
-              val blackStoneLightColor =
-                Stop(0, Color.Black.deriveColor(1.0, 1.0, 10, 1.0))
-              val blackStoneDarkColor = Stop(1, Color.Black)
               makeStoneColor(blackStoneLightColor, blackStoneDarkColor)
             case Some(White) =>
-              val whiteStoneLightColor = Stop(0, Color.White)
-              val whiteStoneDarkColor =
-                Stop(1, Color.White.deriveColor(1.0, 1.0, 0.8, 1))
               makeStoneColor(whiteStoneLightColor, whiteStoneDarkColor)
           }
 
