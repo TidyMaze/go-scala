@@ -37,7 +37,7 @@ class Controller(view: View, ai: AI) {
 //      Thread.sleep(100)
       turn += 1
 
-      println(s"Average time per turn: ${(System.currentTimeMillis() - startTime) / turn}ms")
+      println(s"Average time per turn: ${(System.currentTimeMillis().toDouble - startTime.toDouble) / turn.toDouble}ms")
     }
   }
 }
