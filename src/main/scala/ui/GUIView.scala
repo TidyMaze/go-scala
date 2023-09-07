@@ -2,18 +2,16 @@ package fr.yaro.go
 package ui
 import engine.{Black, State, White}
 
+import javafx.beans.binding.IntegerBinding
+import javafx.beans.property.SimpleIntegerProperty
+import javafx.beans.value.ObservableNumberValue
 import javafx.scene.layout
 import scalafx.Includes.when
-import scalafx.animation.{
-  FadeTransition,
-  ParallelTransition,
-  ScaleTransition,
-  Transition,
-  TranslateTransition
-}
+import scalafx.animation.{FadeTransition, ParallelTransition, ScaleTransition, Transition, TranslateTransition}
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.beans.binding.{Bindings, NumberBinding}
+import scalafx.beans.property.IntegerProperty
 import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.{Node, Scene}
 import scalafx.scene.control.{Button, Label}
@@ -37,7 +35,7 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
   private val backgroundColor = Color.rgb(219, 167, 94)
   private val backgroundColor2 = backgroundColor.darker
 
-  var cellLength: NumberBinding = null
+  var cellLength: IntegerProperty = IntegerProperty(0)
 
   private val blackStoneLightColor =
     Stop(0, Color.Black.deriveColor(1.0, 1.0, 10, 1.0))
@@ -298,9 +296,27 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
       )
     }
 
+    // initial cells
     cells = (0 until 9 map { i: Int =>
       0 until 9 map { j =>
-        new StackPane()
+        new StackPane() {
+          val button = new Button() {
+            maxWidth = Double.MaxValue
+            maxHeight = Double.MaxValue
+
+            background <== when(hover)
+              .choose(backgroundButtonHover)
+              .otherwise(backgroundButton)
+            onAction = _ => {
+              println(s"clicked $i,$j")
+            }
+          }
+          children = Seq(
+            button,
+            makeStone(makeStoneColor(Some(Black))),
+            makeStone(makeStoneColor(Some(White)))
+          ).asInstanceOf[Seq[Node]]
+        }
       }
     })
 
@@ -327,28 +343,7 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
       content = vBox
     }
 
-    cellLength = min(s.width / 9, s.height / 9)
-
-    cells.zipWithIndex.foreach { case (row, i) =>
-      row.zipWithIndex.foreach { case (cell, j) =>
-        val button = new Button() {
-          maxWidth = Double.MaxValue
-          maxHeight = Double.MaxValue
-
-          background <== when(hover)
-            .choose(backgroundButtonHover)
-            .otherwise(backgroundButton)
-          onAction = _ => {
-            println(s"clicked $i,$j")
-          }
-        }
-        cell.children = Seq(
-          button,
-          makeStone(makeStoneColor(Some(Black))),
-          makeStone(makeStoneColor(Some(White)))
-        ).asInstanceOf[Seq[Node]]
-      }
-    }
+    cellLength <== min(s.width / 9, s.height / 9)
 
     grid.prefWidth <== cellLength * 9
     grid.prefHeight <== cellLength * 9
