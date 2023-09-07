@@ -7,7 +7,13 @@ import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.value.ObservableNumberValue
 import javafx.scene.layout
 import scalafx.Includes.when
-import scalafx.animation.{FadeTransition, ParallelTransition, ScaleTransition, Transition, TranslateTransition}
+import scalafx.animation.{
+  FadeTransition,
+  ParallelTransition,
+  ScaleTransition,
+  Transition,
+  TranslateTransition
+}
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.beans.binding.{Bindings, NumberBinding}
@@ -264,6 +270,32 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
 
   override def start(): Unit = {
 
+    // initial cells
+    cells = (0 until 9 map { i: Int =>
+      0 until 9 map { j =>
+        val node = new StackPane() {
+          val button = new Button() {
+            maxWidth = Double.MaxValue
+            maxHeight = Double.MaxValue
+
+            background <== when(hover)
+              .choose(backgroundButtonHover)
+              .otherwise(backgroundButton)
+            onAction = _ => {
+              println(s"clicked $i,$j")
+            }
+          }
+          children = Seq(
+            button,
+            makeStone(makeStoneColor(Some(Black))),
+            makeStone(makeStoneColor(Some(White)))
+          ).asInstanceOf[Seq[Node]]
+        }
+
+        node
+      }
+    })
+
     val grid = new GridPane() {
       alignment = Pos.Center
       hgrow = Priority.Never
@@ -294,35 +326,31 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
           )
         )
       )
-    }
 
-    // initial cells
-    cells = (0 until 9 map { i: Int =>
-      0 until 9 map { j =>
-        new StackPane() {
-          val button = new Button() {
-            maxWidth = Double.MaxValue
-            maxHeight = Double.MaxValue
+      prefWidth <== cellLength * 9
+      prefHeight <== cellLength * 9
+      maxWidth <== cellLength * 9
+      maxHeight <== cellLength * 9
 
-            background <== when(hover)
-              .choose(backgroundButtonHover)
-              .otherwise(backgroundButton)
-            onAction = _ => {
-              println(s"clicked $i,$j")
-            }
-          }
-          children = Seq(
-            button,
-            makeStone(makeStoneColor(Some(Black))),
-            makeStone(makeStoneColor(Some(White)))
-          ).asInstanceOf[Seq[Node]]
+      columnConstraints = (0 until 9).map { _ =>
+        new scalafx.scene.layout.ColumnConstraints() {
+          hgrow = Priority.Always
+          prefWidth <== cellLength
         }
       }
-    })
 
-    cells.zipWithIndex.foreach { case (row, i) =>
-      row.zipWithIndex.foreach { case (cell, j) =>
-        grid.add(cell, j, i)
+      rowConstraints = (0 until 9).map { _ =>
+        new scalafx.scene.layout.RowConstraints() {
+          vgrow = Priority.Always
+          prefHeight <== cellLength
+        }
+      }
+    }
+
+    // add cells to grid
+    for (i <- 0 until 9) {
+      for (j <- 0 until 9) {
+        grid.add(cells(i)(j), j, i)
       }
     }
 
@@ -344,25 +372,6 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
     }
 
     cellLength <== min(s.width / 9, s.height / 9)
-
-    grid.prefWidth <== cellLength * 9
-    grid.prefHeight <== cellLength * 9
-    grid.maxWidth <== cellLength * 9
-    grid.maxHeight <== cellLength * 9
-
-    grid.columnConstraints = (0 until 9).map { _ =>
-      new scalafx.scene.layout.ColumnConstraints() {
-        hgrow = Priority.Always
-        prefWidth <== cellLength
-      }
-    }
-
-    grid.rowConstraints = (0 until 9).map { _ =>
-      new scalafx.scene.layout.RowConstraints() {
-        vgrow = Priority.Always
-        prefHeight <== cellLength
-      }
-    }
 
     stage = new PrimaryStage {
       title = "Go"
