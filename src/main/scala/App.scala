@@ -17,6 +17,8 @@ class Controller(view: View, ai: AI) {
 
     view.render(state)
 
+    Thread.sleep(2000)
+
     while (!game.isOver(state)) {
       if (startTime == 0 && turn > 1000) {
         startTime = System.currentTimeMillis()

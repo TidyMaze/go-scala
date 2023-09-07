@@ -233,6 +233,7 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
     }
     new StackPane() {
       children = Seq(shadow, stone)
+      opacity = 0.0
     }
   }
 
