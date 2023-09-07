@@ -24,11 +24,19 @@ class LessDumbAI extends AI {
         val enemyKilled = game.getKilledGroups(stateIfEnemyWasPlaying, m.coord)
         val enemyKilledCount = enemyKilled.flatten.size
 
+//        val touchingAtLeastOneEnemyStone =
+//          game.getNeighborsMemo(state.grid.size, m.coord).exists { c =>
+//            state.grid(c).contains(state.turn.opponent)
+//          }
+//
+//        val touchingBonus = if (touchingAtLeastOneEnemyStone) 1 else 0
+
         println(
           s"Playing $m would kill $killedCount stones in those groups: $killed. Enemy would kill $enemyKilledCount stones in those groups: $enemyKilled"
         )
 
         // It's better to make a move that kills stones and doesn't let the enemy kill stones.
+//        (m, killedCount + enemyKilledCount + touchingBonus)
         (m, killedCount + enemyKilledCount)
       }
       .maxByOption(_._2)
