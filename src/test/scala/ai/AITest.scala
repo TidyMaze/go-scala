@@ -31,7 +31,12 @@ class AITest extends AnyWordSpec {
       val rawGrid =
         """XXX.XXXX
           |XOX.XOOX
-          |X.X.X.XX""".stripMargin
+          |X.X.X.XX
+          |........
+          |........
+          |........
+          |........
+          |........""".stripMargin
 
       assert(runAI(rawGrid) === Some(Move(Coord(5,2))))
     }

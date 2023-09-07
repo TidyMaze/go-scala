@@ -16,7 +16,12 @@ class LessDumbAI extends AI {
     val shuffled = Random.shuffle(moves)
 
     val best = shuffled
-      .map(m => (m, game.getKilledGroups(state, m.coord).flatten.size))
+      .map { m =>
+        val killed = game.getKilledGroups(state, m.coord)
+        val killedCount = killed.flatten.size
+        println(s"Playing $m would kill $killedCount stones in those groups: $killed")
+        (m, killedCount)
+      }
       .maxByOption(_._2)
     println(s"Best killing move: $best")
 
