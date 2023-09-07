@@ -1,6 +1,6 @@
 package fr.yaro.go
 
-import ai.{AI, BestKillingMoveAI}
+import ai.{AI, BestKillingMoveAI, LessDumbAI}
 import engine.{Custom, Game}
 import ui.{GUIView, View}
 
@@ -57,7 +57,7 @@ object App {
     implicit val ec: ExecutionContext =
       ExecutionContext.fromExecutor(new ForkJoinPool())
 
-    val ai = new BestKillingMoveAI()
+    val ai = new LessDumbAI()
     val view = new GUIView()
     val controller = new Controller(view, ai)
     controller.startGame()

@@ -31,10 +31,37 @@ class Grid(val grid: Seq[Seq[Option[Color]]]) {
     val state = Seq(grid)
     state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
   }
+
+  override def toString: String = {
+    grid
+      .map { row =>
+        row
+          .map {
+            case Some(Black) => 'X'
+            case Some(White) => 'O'
+            case None        => '.'
+          }
+          .mkString("")
+      }
+      .mkString("\n")
+  }
 }
 
 object Grid {
+
   def empty(size: Int): Grid = new Grid(
     Seq.fill[Option[Color]](size, size)(None)
   )
+
+  def fromString(str: String): Grid = {
+    val lines = str.split("\n")
+    val grid = lines.map { line =>
+      line.map {
+        case '.' => None
+        case 'X' => Some(Black)
+        case 'O' => Some(White)
+      }
+    }
+    new Grid(grid)
+  }
 }
