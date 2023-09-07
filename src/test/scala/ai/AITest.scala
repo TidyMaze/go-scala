@@ -24,7 +24,7 @@ class AITest extends AnyWordSpec {
           |XOX
           |...""".stripMargin
 
-        assert(runAI(rawGrid) === Some(Move(Coord(1, 2))))
+      assert(runAI(rawGrid) === Some(Move(Coord(1, 2))))
     }
 
     "close the biggest group of stones" in {
@@ -38,7 +38,16 @@ class AITest extends AnyWordSpec {
           |........
           |........""".stripMargin
 
-      assert(runAI(rawGrid) === Some(Move(Coord(5,2))))
+      assert(runAI(rawGrid) === Some(Move(Coord(5, 2))))
+    }
+
+    "defend against opponent attack" in {
+      val rawGrid =
+        """.O.
+          |OXO
+          |...""".stripMargin
+
+      assert(runAI(rawGrid) === Some(Move(Coord(1,2))))
     }
   }
 
