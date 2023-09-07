@@ -60,7 +60,7 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
   private val backgroundButtonHover = new Background(
     Array(
       new BackgroundFill(
-        Color.Red,
+        new Color(Color.Red.opacity(0.1)),
         CornerRadii.Empty,
         Insets.Empty
       )
@@ -154,7 +154,7 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
 
     val fadeTransition = new FadeTransition() {
       node = pane
-      duration = new Duration(100)
+      duration = new Duration(200)
 
       fromValue = 1.0
       toValue = 0.0
@@ -188,7 +188,7 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
 
     val fadeTransition = new FadeTransition() {
       node = pane
-      duration = new Duration(100)
+      duration = new Duration(200)
 
       fromValue = 0.0
       toValue = 1.0
