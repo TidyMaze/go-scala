@@ -19,8 +19,17 @@ class LessDumbAI extends AI {
       .map { m =>
         val killed = game.getKilledGroups(state, m.coord)
         val killedCount = killed.flatten.size
-        println(s"Playing $m would kill $killedCount stones in those groups: $killed")
-        (m, killedCount)
+
+        val stateIfEnemyWasPlaying = state.copy(turn = state.turn.opponent)
+        val enemyKilled = game.getKilledGroups(stateIfEnemyWasPlaying, m.coord)
+        val enemyKilledCount = enemyKilled.flatten.size
+
+        println(
+          s"Playing $m would kill $killedCount stones in those groups: $killed. Enemy would kill $enemyKilledCount stones in those groups: $enemyKilled"
+        )
+
+        // It's better to make a move that kills stones and doesn't let the enemy kill stones.
+        (m, killedCount + enemyKilledCount)
       }
       .maxByOption(_._2)
     println(s"Best killing move: $best")
