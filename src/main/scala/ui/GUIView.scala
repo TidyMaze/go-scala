@@ -4,7 +4,12 @@ import engine.{Black, State, White}
 
 import javafx.scene.layout
 import scalafx.Includes.when
-import scalafx.animation.TranslateTransition
+import scalafx.animation.{
+  FadeTransition,
+  ParallelTransition,
+  Transition,
+  TranslateTransition
+}
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.beans.binding.{Bindings, NumberBinding}
@@ -102,41 +107,31 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
             !cell.contains(White) && stack.children(2).getOpacity == 1.0
 
           if (addBlack) {
-            val pane = new StackPane(
-              stack.children(1).asInstanceOf[layout.StackPane]
-            )
-            val animation: TranslateTransition = makePutStoneTransition(pane)
+            val pane =
+              new StackPane(stack.children(1).asInstanceOf[layout.StackPane])
 
-            stack.children(1).setOpacity(1)
-
+            val animation = makePutStoneTransition(pane)
             animation.play()
           } else if (removeBlack) {
-            val pane = new StackPane(
-              stack.children(1).asInstanceOf[layout.StackPane]
-            )
-            val animation: TranslateTransition = makeRemoveStoneTransition(pane)
+            val pane =
+              new StackPane(stack.children(1).asInstanceOf[layout.StackPane])
 
+            val animation = makeRemoveStoneTransition(pane)
             animation.play()
-            animation.onFinished = _ => stack.children(1).setOpacity(0)
           }
 
           if (addWhite) {
             val pane =
               new StackPane(stack.children(2).asInstanceOf[layout.StackPane])
 
-            val animation: TranslateTransition = makePutStoneTransition(pane)
-
-            stack.children(2).setOpacity(1)
-
+            val animation = makePutStoneTransition(pane)
             animation.play()
           } else if (removeWhite) {
-            val pane = new StackPane(
-              stack.children(2).asInstanceOf[layout.StackPane]
-            )
-            val animation: TranslateTransition = makeRemoveStoneTransition(pane)
+            val pane =
+              new StackPane(stack.children(2).asInstanceOf[layout.StackPane])
 
+            val animation = makeRemoveStoneTransition(pane)
             animation.play()
-            animation.onFinished = _ => stack.children(2).setOpacity(0)
           }
         }
       }
@@ -145,21 +140,32 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
 
   private def makeRemoveStoneTransition(
       pane: StackPane
-  ): TranslateTransition = {
-    val animation = new TranslateTransition() {
+  ): Transition = {
+    val translateTransition = new TranslateTransition() {
       node = pane
       duration = new Duration(100)
 
       fromX = 0
       fromY = 0
       toX = 0
-      toY = 100
+      toY = 50
     }
-    animation
+
+    val fadeTransition = new FadeTransition() {
+      node = pane
+      duration = new Duration(100)
+
+      fromValue = 1.0
+      toValue = 0.0
+    }
+
+    new ParallelTransition() {
+      children = Seq(translateTransition, fadeTransition)
+    }
   }
 
-  private def makePutStoneTransition(pane: StackPane): TranslateTransition = {
-    val animation = new TranslateTransition() {
+  private def makePutStoneTransition(pane: StackPane): Transition = {
+    val translateTransition = new TranslateTransition() {
       node = pane
       duration = new Duration(100)
 
@@ -168,7 +174,18 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
       toX = 0
       toY = 0
     }
-    animation
+
+    val fadeTransition = new FadeTransition() {
+      node = pane
+      duration = new Duration(100)
+
+      fromValue = 0.0
+      toValue = 1.0
+    }
+
+    new ParallelTransition() {
+      children = Seq(translateTransition, fadeTransition)
+    }
   }
 
   private def makeStoneColor(cell: Option[engine.Color]): Paint = {
