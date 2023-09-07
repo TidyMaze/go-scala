@@ -7,6 +7,7 @@ import scalafx.Includes.when
 import scalafx.animation.{
   FadeTransition,
   ParallelTransition,
+  ScaleTransition,
   Transition,
   TranslateTransition
 }
@@ -159,8 +160,18 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
       toValue = 0.0
     }
 
+    val scaleTransition = new ScaleTransition() {
+      node = pane
+      duration = new Duration(100)
+
+      fromX = 1.0
+      fromY = 1.0
+      toX = 0.5
+      toY = 0.5
+    }
+
     new ParallelTransition() {
-      children = Seq(translateTransition, fadeTransition)
+      children = Seq(translateTransition, fadeTransition, scaleTransition)
     }
   }
 
@@ -183,8 +194,18 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
       toValue = 1.0
     }
 
+    val scaleTransition = new ScaleTransition() {
+      node = pane
+      duration = new Duration(100)
+
+      fromX = 2.0
+      fromY = 2.0
+      toX = 1.0
+      toY = 1.0
+    }
+
     new ParallelTransition() {
-      children = Seq(translateTransition, fadeTransition)
+      children = Seq(translateTransition, fadeTransition, scaleTransition)
     }
   }
 
