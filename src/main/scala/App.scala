@@ -41,7 +41,7 @@ class Controller(view: View, ai: AI) {
 
       println(s"Turn $turn started at ${startTime}")
 
-      Thread.sleep(100)
+      Thread.sleep(500)
       if (startTime != 0) {
         println(
           s"Average time per turn: ${(System.currentTimeMillis().toDouble - startTime.toDouble) / turn.toDouble}ms"
