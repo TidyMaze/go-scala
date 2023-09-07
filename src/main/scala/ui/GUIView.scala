@@ -2,29 +2,20 @@ package fr.yaro.go
 package ui
 import engine.{Black, State, White}
 
-import javafx.beans.binding.IntegerBinding
-import javafx.beans.property.SimpleIntegerProperty
-import javafx.beans.value.ObservableNumberValue
 import javafx.scene.layout
 import scalafx.Includes.when
-import scalafx.animation.{
-  FadeTransition,
-  ParallelTransition,
-  ScaleTransition,
-  Transition,
-  TranslateTransition
-}
+import scalafx.animation._
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.application.{JFXApp3, Platform}
 import scalafx.beans.binding.{Bindings, NumberBinding}
 import scalafx.beans.property.IntegerProperty
 import scalafx.geometry.{Insets, Pos}
-import scalafx.scene.{Node, Scene}
 import scalafx.scene.control.{Button, Label}
 import scalafx.scene.effect.BoxBlur
 import scalafx.scene.layout._
 import scalafx.scene.paint._
 import scalafx.scene.shape.Circle
+import scalafx.scene.{Node, Scene}
 import scalafx.util.Duration
 
 import scala.concurrent.{ExecutionContext, Future}
