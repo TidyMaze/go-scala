@@ -4,6 +4,9 @@ import ai.{AI, BestKillingMoveAI, LessDumbAI}
 import engine.{Custom, Game}
 import ui.{GUIView, View}
 
+import javafx.application.Application
+import scalafx.application.Platform
+
 import java.util.concurrent.ForkJoinPool
 import scala.concurrent.ExecutionContext
 
@@ -17,10 +20,10 @@ class Controller(view: View, ai: AI) {
 
     view.render(state)
 
-    Thread.sleep(2000)
+//    Thread.sleep(2000)
 
     while (!game.isOver(state)) {
-      if (startTime == 0 && turn > 1000) {
+      if (startTime == 0 && turn > 10) {
         startTime = System.currentTimeMillis()
         turn = 0
       }
@@ -45,7 +48,7 @@ class Controller(view: View, ai: AI) {
 
       println(s"Turn $turn started at ${startTime}")
 
-      Thread.sleep(500)
+      Thread.sleep(200)
       if (startTime != 0) {
         println(
           s"Average time per turn: ${(System.currentTimeMillis().toDouble - startTime.toDouble) / turn.toDouble}ms"
@@ -67,5 +70,8 @@ object App {
     val view = new GUIView()
     val controller = new Controller(view, ai)
     controller.startGame()
+
+    Thread.sleep(5000)
+    Platform.exit()
   }
 }
