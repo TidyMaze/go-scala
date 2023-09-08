@@ -4,6 +4,29 @@ package engine
 import scala.collection.{View, mutable}
 
 class Game {
+  def getScore(state: State, fromPlayer: Color): Int = {
+    val playerCaptured = state.countCaptured(fromPlayer)
+    val opponentPlayerCaptured = state.countCaptured(fromPlayer.opponent)
+    val playerStones = state.countStones(fromPlayer)
+    val opponentPlayerStones = state.countStones(fromPlayer.opponent)
+
+    playerCaptured - opponentPlayerCaptured + playerStones - opponentPlayerStones
+  }
+
+  def getWinner(state: State): Option[Color] = {
+    // TODO: Optimize this
+    val blackScore = getScore(state, Black)
+    val whiteScore = getScore(state, White)
+
+    if (blackScore > whiteScore) {
+      Some(Black)
+    } else if (whiteScore > blackScore) {
+      Some(White)
+    } else {
+      None
+    }
+  }
+
   val ladderGrid = Grid.fromString(
     """OOO......
       |OX.......

@@ -36,7 +36,9 @@ class Controller(view: View, ai: AI) {
           view.render(state)
         case None =>
           state = game.pass(state)
-          println(s"${state.turn.opponent} passed")
+          println(
+            s"${state.turn.opponent} passed. Passed turns: ${state.passed}"
+          )
       }
 
       turn += 1
@@ -50,6 +52,8 @@ class Controller(view: View, ai: AI) {
         )
       }
     }
+
+    println(s"Game over. Winner is: ${game.getWinner(state).getOrElse("nobody")}")
   }
 }
 

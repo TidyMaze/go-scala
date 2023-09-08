@@ -12,6 +12,11 @@ case class State(
     passed: Map[Color, Boolean],
     alreadyPlayedStates: Set[Grid]
 ) {
+  def countCaptured(color: Color): Int = captured.getOrElse(color, 0)
+
+  def countStones(color: Color): Int =
+    grid.grid.flatten.count(_.contains(color))
+
   def at(coord: Coord): Option[Color] = grid(coord)
 
   def gridSize: Int = grid.size
