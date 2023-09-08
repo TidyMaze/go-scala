@@ -13,6 +13,8 @@ class LessDumbAI extends AI {
   def shuffled[A](seq: Seq[A]): Seq[A] = Random.shuffle(seq)
 
   def findBestMove(game: Game, state: State): Option[Move] = {
+    val currentStateScore = game.getScore(state, state.turn)
+
     val movesDepth1 = shuffled(game.getValidMoves(state))
     movesDepth1
       .map { m =>
@@ -37,7 +39,7 @@ class LessDumbAI extends AI {
         (m, score)
       }
       .filter { case (m, score) =>
-        if (score < -1) {
+        if (score < currentStateScore) {
           println(
             s"Passing best move $m with score $score because it's not worth it"
           )
