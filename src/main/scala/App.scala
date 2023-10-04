@@ -1,7 +1,7 @@
 package fr.yaro.go
 
 import ai.{AI, BestKillingMoveAI, LessDumbAI}
-import engine.{Custom, Game}
+import engine.{Custom, Game, Grid, GridSize, Nineteen, Thirteen}
 import ui.{GUIView, View}
 
 import javafx.application.Application
@@ -14,9 +14,9 @@ class Controller(view: View, ai: AI) {
   var turn = 0
   var startTime: Long = 0
 
-  def startGame() = {
+  def startGame(gridSize: GridSize) = {
     val game = new Game()
-    var state = game.initialState(Custom(9))
+    var state = game.initialState(gridSize)
 
     view.render(state)
 
@@ -67,9 +67,11 @@ object App {
       ExecutionContext.fromExecutor(new ForkJoinPool())
 
     val ai = new LessDumbAI()
-    val view = new GUIView()
+    val gridSize = Thirteen
+
+    val view = new GUIView(gridSize)
     val controller = new Controller(view, ai)
-    controller.startGame()
+    controller.startGame(gridSize)
 
     Thread.sleep(5000)
     Platform.exit()

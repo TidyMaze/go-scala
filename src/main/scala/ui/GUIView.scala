@@ -1,6 +1,6 @@
 package fr.yaro.go
 package ui
-import engine.{Black, State, White}
+import engine.{Black, GridSize, State, White}
 
 import javafx.scene.layout
 import scalafx.Includes.when
@@ -21,7 +21,7 @@ import scalafx.util.Duration
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
+class GUIView(gridSize: GridSize)(implicit ec: ExecutionContext) extends View with JFXApp3 {
   var text: Label = null
 
   // watchable count
@@ -261,10 +261,9 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
       .otherwise(binding1)
 
   override def start(): Unit = {
-
     // initial cells
-    cells = (0 until 9 map { i: Int =>
-      0 until 9 map { j =>
+    cells = (0 until gridSize.getSize map { i: Int =>
+      0 until gridSize.getSize map { j =>
         val node = new StackPane() {
           val button = new Button() {
             maxWidth = Double.MaxValue
@@ -319,19 +318,19 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
         )
       )
 
-      prefWidth <== cellLength * 9
-      prefHeight <== cellLength * 9
-      maxWidth <== cellLength * 9
-      maxHeight <== cellLength * 9
+      prefWidth <== cellLength * gridSize.getSize
+      prefHeight <== cellLength * gridSize.getSize
+      maxWidth <== cellLength * gridSize.getSize
+      maxHeight <== cellLength * gridSize.getSize
 
-      columnConstraints = (0 until 9).map { _ =>
+      columnConstraints = (0 until gridSize.getSize).map { _ =>
         new scalafx.scene.layout.ColumnConstraints() {
           hgrow = Priority.Always
           prefWidth <== cellLength
         }
       }
 
-      rowConstraints = (0 until 9).map { _ =>
+      rowConstraints = (0 until gridSize.getSize).map { _ =>
         new scalafx.scene.layout.RowConstraints() {
           vgrow = Priority.Always
           prefHeight <== cellLength
@@ -340,8 +339,8 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
     }
 
     // add cells to grid
-    for (i <- 0 until 9) {
-      for (j <- 0 until 9) {
+    for (i <- 0 until gridSize.getSize) {
+      for (j <- 0 until gridSize.getSize) {
         grid.add(cells(i)(j), j, i)
       }
     }
@@ -363,7 +362,7 @@ class GUIView(implicit ec: ExecutionContext) extends View with JFXApp3 {
       content = vBox
     }
 
-    cellLength <== min(s.width / 9, s.height / 9)
+    cellLength <== min(s.width / gridSize.getSize, s.height / gridSize.getSize)
 
     stage = new PrimaryStage {
       title = "Go"
