@@ -1,9 +1,9 @@
 package fr.yaro.go
 
-import engine.{Game, Move, State}
+import engine.{Action, Game, PutStone, State}
 
 trait Player {
-  def play(game: Game, state: State): Option[Move]
+  def play(game: Game, state: State): Action
 
   def name: String
 }

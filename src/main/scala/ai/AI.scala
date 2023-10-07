@@ -1,10 +1,10 @@
 package fr.yaro.go
 package ai
 
-import engine.{Game, Move, State}
+import engine.{Action, Game, PutStone, State}
 
 trait AI extends Player {
-  def findBestMove(game: Game, state: State): Option[Move]
+  def findBestAction(game: Game, state: State): Action
 
-  override def play(game: Game, state: State): Option[Move] = findBestMove(game, state)
+  override def play(game: Game, state: State): Action = findBestAction(game, state)
 }

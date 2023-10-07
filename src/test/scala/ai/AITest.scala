@@ -1,10 +1,20 @@
 package fr.yaro.go
 package ai
 
-import fr.yaro.go.engine.{Black, Coord, Game, Grid, Move, State, White}
+import fr.yaro.go.engine.{
+  Action,
+  Black,
+  Coord,
+  Game,
+  Grid,
+  PutStone,
+  State,
+  White
+}
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-class AITest extends AnyWordSpec {
+class AITest extends AnyWordSpec with Matchers {
   val ai = new LessDumbAI()
   val game = new Game()
 
@@ -15,7 +25,7 @@ class AITest extends AnyWordSpec {
           |...
           |...""".stripMargin
 
-      assert(runAI(rawGrid).isDefined)
+      runAI(rawGrid) shouldBe a[PutStone]
     }
 
     "close an eye" in {
@@ -24,7 +34,7 @@ class AITest extends AnyWordSpec {
           |XOX
           |...""".stripMargin
 
-      assert(runAI(rawGrid) === Some(Move(Coord(1, 2))))
+      assert(runAI(rawGrid) === PutStone(Coord(1, 2)))
     }
 
     "close the biggest group of stones" in {
@@ -38,7 +48,7 @@ class AITest extends AnyWordSpec {
           |........
           |........""".stripMargin
 
-      assert(runAI(rawGrid) === Some(Move(Coord(5, 2))))
+      assert(runAI(rawGrid) === PutStone(Coord(5, 2)))
     }
 
     "defend against opponent attack" in {
@@ -47,11 +57,11 @@ class AITest extends AnyWordSpec {
           |OXO
           |...""".stripMargin
 
-      assert(runAI(rawGrid) === Some(Move(Coord(1,2))))
+      assert(runAI(rawGrid) === PutStone(Coord(1, 2)))
     }
   }
 
-  private def runAI(rawGrid: String): Option[Move] = {
+  private def runAI(rawGrid: String): Action = {
     val grid = Grid.fromString(rawGrid)
 
     println(grid)
@@ -63,7 +73,7 @@ class AITest extends AnyWordSpec {
       passed = Map(White -> false, Black -> false),
       Set.empty
     )
-    val move = ai.findBestMove(game, state)
+    val move = ai.findBestAction(game, state)
     move
   }
 }

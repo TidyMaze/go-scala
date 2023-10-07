@@ -1,7 +1,7 @@
 package fr.yaro.go
 package ai
 
-import engine.{Game, Move, State}
+import engine.{Action, Game, Pass, PutStone, State}
 
 import scala.util.Random
 
@@ -11,8 +11,8 @@ class BestKillingMoveAI extends AI {
 
   def name: String = "BestKillingMoveAI"
 
-  def findBestMove(game: Game, state: State): Option[Move] = {
-    val moves = game.getValidMoves(state)
+  def findBestAction(game: Game, state: State): Action = {
+    val moves = game.getValidPutStones(state)
 
     val shuffled = Random.shuffle(moves)
 
@@ -20,5 +20,6 @@ class BestKillingMoveAI extends AI {
       .map(m => (m, game.getKilledGroups(state, m.coord).flatten.size))
       .maxByOption(_._2)
       .map(_._1)
+      .getOrElse(Pass)
   }
 }

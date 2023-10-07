@@ -1,7 +1,7 @@
 package fr.yaro.go
 
 import ai.{AI, BestKillingMoveAI, LessDumbAI}
-import engine.{Black, Custom, Game, Grid, GridSize, Nineteen, Thirteen, White}
+import engine.{Black, Custom, Game, Grid, GridSize, Nineteen, Pass, PutStone, Thirteen, White}
 import ui.{GUIView, View}
 
 import javafx.application.Application
@@ -41,13 +41,13 @@ class Controller(view: View, playerBlack: Player, playerWhite: Player) {
 
       val move = currentPlayer.play(game, state)
       move match {
-        case Some(move) =>
-          state = game.play(state, move)
+        case p: PutStone =>
+          state = game.putStone(state, p)
           println(
             s"${state.turn.opponent} (${currentPlayer.name}) played $move"
           )
           view.render(state)
-        case None =>
+        case Pass =>
           state = game.pass(state)
           println(
             s"${state.turn.opponent} passed. Passed turns: ${state.passed}"

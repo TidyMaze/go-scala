@@ -5,8 +5,8 @@ import scala.collection.{View, mutable}
 import scala.util.Try
 
 class Game {
-  def isValidMove(state: State, move: Move): Boolean =
-    getValidMoves(state).contains(move)
+  def isValidMove(state: State, move: PutStone): Boolean =
+    getValidPutStones(state).contains(move)
 
   def getScore(state: State, fromPlayer: Color): Int = {
     val playerCaptured = state.countCaptured(fromPlayer)
@@ -53,7 +53,7 @@ class Game {
       Set.empty
     )
 
-  def play(state: State, move: Move): State = {
+  def putStone(state: State, move: PutStone): State = {
     val killedGroups = getKilledGroups(state, move.coord)
 
     val newGrid =
@@ -70,7 +70,7 @@ class Game {
     )
   }
 
-  def put(grid: Grid, move: Move, color: Color): Grid =
+  def put(grid: Grid, move: PutStone, color: Color): Grid =
     grid.updated(move.coord, Some(color))
 
   def removeKilledGroups(grid: Grid, killedGroups: Seq[Set[Coord]]): Grid = {
@@ -87,7 +87,7 @@ class Game {
       passed = state.passed.updated(state.turn, true)
     )
 
-  def getValidMoves(state: State): Seq[Move] = {
+  def getValidPutStones(state: State): Seq[PutStone] = {
     // find any empty cell
     val emptyCells = for {
       x <- 0 until state.gridSize
@@ -98,17 +98,17 @@ class Game {
 
     // remove all suicide moves
     emptyCells
-      .map(Move.apply)
+      .map(PutStone.apply)
       .filterNot(m => isSuicide(state, m))
       .filterNot(m => resultsInAlreadyPlayedState(state, m))
   }
 
-  def resultsInAlreadyPlayedState(state: State, move: Move) = {
-    val resState = play(state, move)
+  def resultsInAlreadyPlayedState(state: State, move: PutStone) = {
+    val resState = putStone(state, move)
     state.alreadyPlayedStates.contains(resState.grid)
   }
 
-  def isSuicide(state: State, move: Move): Boolean = {
+  def isSuicide(state: State, move: PutStone): Boolean = {
     // a suicide is a move that immediately leads to the group being dead
     // if an enemy group is killed, then it's not a suicide
 

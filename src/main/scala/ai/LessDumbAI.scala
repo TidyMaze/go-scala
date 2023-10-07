@@ -1,7 +1,7 @@
 package fr.yaro.go
 package ai
 
-import engine.{Color, Game, Move, State}
+import engine.{Action, Color, Game, Pass, PutStone, State}
 
 import scala.util.Random
 
@@ -14,17 +14,17 @@ class LessDumbAI extends AI {
   def name: String = "LessDumbAI"
   def shuffled[A](seq: Seq[A]): Seq[A] = Random.shuffle(seq)
 
-  def findBestMove(game: Game, state: State): Option[Move] = {
+  def findBestAction(game: Game, state: State): Action = {
     val currentStateScore = game.getScore(state, state.turn)
 
-    val movesDepth1 = shuffled(game.getValidMoves(state))
+    val movesDepth1 = shuffled(game.getValidPutStones(state))
     movesDepth1
       .map { m =>
-        val stateDepth1 = game.play(state, m)
-        val movesDepth2 = shuffled(game.getValidMoves(stateDepth1))
+        val stateDepth1 = game.putStone(state, m)
+        val movesDepth2 = shuffled(game.getValidPutStones(stateDepth1))
         val score = movesDepth2
           .map { m2 =>
-            val stateDepth2 = game.play(stateDepth1, m2)
+            val stateDepth2 = game.putStone(stateDepth1, m2)
             val currentPlayer = state.turn
             val score: Int = game.getScore(stateDepth2, currentPlayer)
             (m, score)
@@ -51,5 +51,6 @@ class LessDumbAI extends AI {
         }
       }
       .map(_._1)
+      .getOrElse(Pass)
   }
 }
