@@ -14,7 +14,7 @@ object Move {
     val parts = input.split("")
     if (parts.length == 2) {
       val x = parts(0).toUpperCase()(0) - 'A'
-      val y = parts(1).toInt
+      val y = parts(1).toInt - 1
       Try(Move(Coord(x, y)))
     } else {
       Try(throw new Exception(s"Invalid move: $input"))

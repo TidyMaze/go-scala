@@ -79,7 +79,7 @@ object App {
     implicit val ec: ExecutionContext =
       ExecutionContext.fromExecutor(new ForkJoinPool())
 
-    val player1 = new LessDumbAI()
+    val player1 = new Human()
     val player2 = new BestKillingMoveAI()
     val gridSize = Thirteen
 
