@@ -2,8 +2,12 @@ package fr.yaro.go
 package engine
 
 import scala.collection.{View, mutable}
+import scala.util.Try
 
 class Game {
+  def isValidMove(state: State, move: Move): Boolean =
+    getValidMoves(state).contains(move)
+
   def getScore(state: State, fromPlayer: Color): Int = {
     val playerCaptured = state.countCaptured(fromPlayer)
     val opponentPlayerCaptured = state.countCaptured(fromPlayer.opponent)
