@@ -16,11 +16,9 @@ class BestKillingMoveAI extends AI {
 
     val shuffled = Random.shuffle(moves)
 
-    val best = shuffled
+    shuffled
       .map(m => (m, game.getKilledGroups(state, m.coord).flatten.size))
       .maxByOption(_._2)
-    println(s"Best killing move: $best")
-
-    best.map(_._1)
+      .map(_._1)
   }
 }

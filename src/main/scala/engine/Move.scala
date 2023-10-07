@@ -5,7 +5,13 @@ import engine.Coord
 
 import scala.util.Try
 
-case class Move(coord: Coord)
+case class Move(coord: Coord) {
+  override def toString: String = {
+    val x = ('A' + coord.x).toChar.toUpper
+    val y = coord.y + 1
+    s"$x$y"
+  }
+}
 
 object Move {
 

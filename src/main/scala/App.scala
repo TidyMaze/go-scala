@@ -41,9 +41,11 @@ class Controller(view: View, playerBlack: Player, playerWhite: Player) {
 
       val move = currentPlayer.play(game, state)
       move match {
-        case Some(m) =>
-          state = game.play(state, m)
-          println(s"${state.turn.opponent} played $m")
+        case Some(move) =>
+          state = game.play(state, move)
+          println(
+            s"${state.turn.opponent} (${currentPlayer.name}) played $move"
+          )
           view.render(state)
         case None =>
           state = game.pass(state)
@@ -53,8 +55,6 @@ class Controller(view: View, playerBlack: Player, playerWhite: Player) {
       }
 
       turn += 1
-
-      println(s"Turn $turn started at ${startTime}")
 
       Thread.sleep(200)
       if (startTime != 0) {

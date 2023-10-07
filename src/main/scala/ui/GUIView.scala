@@ -21,12 +21,10 @@ import scalafx.util.Duration
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
-class GUIView(gridSize: GridSize)(implicit ec: ExecutionContext) extends View with JFXApp3 {
+class GUIView(gridSize: GridSize)(implicit ec: ExecutionContext)
+    extends View
+    with JFXApp3 {
   var text: Label = null
-
-  // watchable count
-  var frame = 0
-
   var cells: Seq[Seq[StackPane]] = null
 
   private val backgroundColor = Color.rgb(219, 167, 94)
@@ -74,19 +72,12 @@ class GUIView(gridSize: GridSize)(implicit ec: ExecutionContext) extends View wi
   }
 
   override def render(state: State): Unit = {
-    println("rendering frame " + frame)
-
-    // watchable count
-    frame += 1
-
     if (this.stage == null) {
       println("stage is null")
       return
     }
 
     Platform.runLater {
-      println("running later frame " + frame)
-
       // update grid cells
       state.grid.grid.zipWithIndex.foreach { case (row, i) =>
         row.zipWithIndex.foreach { case (cell, j) =>
