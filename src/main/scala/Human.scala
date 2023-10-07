@@ -4,6 +4,9 @@ import engine.{Game, Move, State}
 import scala.util.{Failure, Success}
 
 class Human extends Player {
+
+  def name: String = "Human"
+
   override def play(game: Game, state: State): Option[Move] = {
     println("Enter your move:")
     val input = scala.io.StdIn.readLine()

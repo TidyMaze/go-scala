@@ -23,6 +23,8 @@ class Controller(view: View, playerBlack: Player, playerWhite: Player) {
 //    Thread.sleep(2000)
 
     while (!game.isOver(state)) {
+      println(s"\n\n\n====== Turn $turn ======")
+
       if (startTime == 0 && turn > 10) {
         startTime = System.currentTimeMillis()
         turn = 0
@@ -35,7 +37,7 @@ class Controller(view: View, playerBlack: Player, playerWhite: Player) {
         case White => playerWhite
       }
 
-      println("Current player: " + currentPlayer)
+      println("Current player: " + currentPlayer.name)
 
       val move = currentPlayer.play(game, state)
       move match {

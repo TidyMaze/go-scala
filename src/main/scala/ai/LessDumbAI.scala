@@ -10,6 +10,8 @@ import scala.util.Random
   * - else tries to block the enemy move that would kill the nost stones.
   */
 class LessDumbAI extends AI {
+
+  def name: String = "LessDumbAI"
   def shuffled[A](seq: Seq[A]): Seq[A] = Random.shuffle(seq)
 
   def findBestMove(game: Game, state: State): Option[Move] = {

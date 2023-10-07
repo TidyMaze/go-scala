@@ -8,6 +8,9 @@ import scala.util.Random
 /** This AI plays the best killing move it finds.
   */
 class BestKillingMoveAI extends AI {
+
+  def name: String = "BestKillingMoveAI"
+
   def findBestMove(game: Game, state: State): Option[Move] = {
     val moves = game.getValidMoves(state)
 
