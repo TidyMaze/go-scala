@@ -1,7 +1,7 @@
 package fr.yaro.go
 
 import ai.{AI, BestKillingMoveAI, LessDumbAI}
-import engine.{Custom, Game, Grid, GridSize, Nineteen, Thirteen}
+import engine.{Black, Custom, Game, Grid, GridSize, Nineteen, Thirteen, White}
 import ui.{GUIView, View}
 
 import javafx.application.Application
@@ -10,7 +10,7 @@ import scalafx.application.Platform
 import java.util.concurrent.ForkJoinPool
 import scala.concurrent.ExecutionContext
 
-class Controller(view: View, ai: AI) {
+class Controller(view: View, playerBlack: Player, playerWhite: Player) {
   var turn = 0
   var startTime: Long = 0
 
@@ -28,10 +28,16 @@ class Controller(view: View, ai: AI) {
         turn = 0
       }
 
-      // clean the console
-      print("\u001b[H\u001b[2J")
+      cleanConsole()
 
-      val move = ai.findBestMove(game, state)
+      val currentPlayer = state.turn match {
+        case Black => playerBlack
+        case White => playerWhite
+      }
+
+      println("Current player: " + currentPlayer)
+
+      val move = currentPlayer.play(game, state)
       move match {
         case Some(m) =>
           state = game.play(state, m)
@@ -56,7 +62,14 @@ class Controller(view: View, ai: AI) {
       }
     }
 
-    println(s"Game over. Winner is: ${game.getWinner(state).getOrElse("nobody")}")
+    println(
+      s"Game over. Winner is: ${game.getWinner(state).getOrElse("nobody")}"
+    )
+  }
+
+  private def cleanConsole(): Unit = {
+    // clean the console
+    print("\u001b[H\u001b[2J")
   }
 }
 
@@ -66,11 +79,12 @@ object App {
     implicit val ec: ExecutionContext =
       ExecutionContext.fromExecutor(new ForkJoinPool())
 
-    val ai = new LessDumbAI()
+    val player1 = new LessDumbAI()
+    val player2 = new BestKillingMoveAI()
     val gridSize = Thirteen
 
     val view = new GUIView(gridSize)
-    val controller = new Controller(view, ai)
+    val controller = new Controller(view, player1, player2)
     controller.startGame(gridSize)
 
     Thread.sleep(5000)
